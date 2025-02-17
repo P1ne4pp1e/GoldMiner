@@ -7,4 +7,8 @@ include_directories(./EasyX/include)
 link_directories(./EasyX/lib64)
 link_libraries(libeasyx.a)
 
+file(COPY ${CMAKE_SOURCE_DIR}/images DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/fonts DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/audios DESTINATION ${CMAKE_BINARY_DIR})
+
 add_executable(GoldMiner main.cpp)
