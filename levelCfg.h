@@ -1,3 +1,12 @@
+#ifndef LEVEL_CFG
+#define LEVEL_CFG
+
 enum Level {
-  START_MENU = 0
+    START_MENU,
+    SHOW_TARGET,
+    HIGH_SCORE
 };
+
+Level level;
+
+#endif
