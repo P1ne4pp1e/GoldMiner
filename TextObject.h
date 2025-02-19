@@ -28,6 +28,9 @@ public:
         : Object(x, y, isDisplayed, id), text(text), fontType(fontType), fontSize(fontSize), color(color) {
     };
 
+    int getHeight() { return 1.0 * textheight(_T(this->text.c_str())); }
+    int getWidth() { return 1.0 * textwidth(_T(this->text.c_str())); }
+
     void setFontSize(int size) {
         this->fontSize = size;
     }
@@ -40,6 +43,10 @@ public:
         this->fontSize = fontSize;
     }
 
+    void setText(string text) {
+        this->text = text;
+    }
+
     void setFont() {
         auto path = fontPath.find(this->fontType);
         AddFontResourceEx(path->second.fontPath.c_str(), FR_PRIVATE, 0);
@@ -47,8 +54,8 @@ public:
     }
 
     bool isOverlapping(int x, int y) {
-        int textWidth = textwidth(_T(text.c_str()));
-        int textHeight = textheight(_T(text.c_str()));
+        int textWidth = textwidth(_T(this->text.c_str()));
+        int textHeight = textheight(_T(this->text.c_str()));
 
         return (x >= this->x * scaleFactor && x <= (this->x * scaleFactor + textWidth) &&
                 y >= this->y * scaleFactor && y <= (this->y * scaleFactor + textHeight));

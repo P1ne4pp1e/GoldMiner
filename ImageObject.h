@@ -17,8 +17,9 @@ public:
 
     void render() override {
         if (this->isDisplayed) {
-            putimage(this->x * scaleFactor, this->y * scaleFactor, mask);
-            // putimage(this->x * scaleFactor, this->y * scaleFactor, img, SRCPAINT);
+            putimage(this->x * scaleFactor, this->y * scaleFactor, mask, SRCAND);
+            putimage(this->x * scaleFactor, this->y * scaleFactor, img, SRCPAINT);
+
         }
     }
 

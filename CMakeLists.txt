@@ -12,3 +12,5 @@ file(COPY ${CMAKE_SOURCE_DIR}/fonts DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/audios DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(GoldMiner main.cpp)
+
+target_link_libraries(GoldMiner PRIVATE Msimg32)

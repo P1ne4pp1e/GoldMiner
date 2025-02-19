@@ -14,9 +14,12 @@ public:
     Object(int x, int y, bool isDisplayed, uint32_t id) : x(x), y(y), isDisplayed(isDisplayed), id(id) {
     };
 
-    int getX() { return this->x * scaleFactor; };
-    int getY() { return this->y * scaleFactor; };
+    int getX() { return this->x; };
+    int getY() { return this->y; };
     int getId() { return this->id; };
+
+    void setX(int x) { this->x = x; };
+    void setY(int y) { this->y = y; };
 
     void changeDisp() { this->isDisplayed ^= 1; };
 
