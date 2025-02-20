@@ -1,10 +1,6 @@
 #ifndef TEXTOBJECT_H
 #define TEXTOBJECT_H
 
-#include <bits/stdc++.h>
-#include <conio.h>
-#include <graphics.h>
-
 #include "Object.h"
 #include "windowCfg.h"
 

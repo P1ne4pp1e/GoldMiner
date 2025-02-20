@@ -9,9 +9,11 @@
 #include "windowCfg.h"
 #include "imgCfg.h"
 #include "levelCfg.h"
+#include "FrameInfo.h"
 #include "TextObject.h"
 #include "TriangleObject.h"
 #include "ImageObject.h"
+#include "AnimationObject.h"
 
 #define HEIGHT 240
 #define WIDTH 320
@@ -59,6 +61,8 @@ TextObject txt_panelLine2_2(0x00010005, 75, 145, true, _T(""), TextObject::FONT_
 ImageObject img_bgTop(0x00020000, 0, 0, true, &bg_top, &mask_bg_top);
 ImageObject img_bgLevelA(0x00020001, 0, 40, true, &bg_level_A, &mask_bg_level_A);
 
+AnimationObject ani_miner(0x00020003, 150, -2, true, &miner_sheet, &mask_miner_sheet, miner_sheet_frames, miner_sheet_duration);
+
 void StartMenu() {
     img_bgStartMenu.render();
 
@@ -93,7 +97,6 @@ void StartMenu() {
             level = Level::HIGH_SCORE;
         }
     }
-
     if (GetAsyncKeyState(0x26) & 0x8000) {
         choose = 1;
         // cout << "VK_UP"  << endl;
@@ -217,9 +220,20 @@ void ShowTarget() {
 void Level1() {
     img_bgTop.render();
     img_bgLevelA.render();
+
+    ani_miner.setFrameDuration(0.2);
+    ani_miner.addAngle(1);
+
+    ani_miner.render();
+
+
+    ani_miner.update();
 }
 
+double angle_tmp = 0;
+
 int main() {
+
     loadingImage(images);
 
     initgraph(WIDTH * scaleFactor, HEIGHT * scaleFactor);
@@ -234,8 +248,16 @@ int main() {
     auto lastTime = chrono::steady_clock::now();
     double fps = 0.0;
 
+
+
+    ani_miner.setAngle(0);
+    ani_miner.setFrameOrder({0});
+
     timer.start();
     while (running) {
+        // static IMAGE img, img1, img2(64, 80), img3;
+        // loadimage(&img, "./images/miner_sheet.png");
+
         auto currentTime = chrono::steady_clock::now();
         frameCount++;
 
@@ -262,6 +284,16 @@ int main() {
         SET_SINGLE_FONT(20, 0, "Kurland", "fonts/Kurland.ttf");
         settextcolor(RGB(255, 255, 255));
         outtextxy(WIDTH * scaleFactor - 70, 10, ("FPS " + to_string(static_cast<int>(fps))).c_str());
+
+        // smoothScale(&img, &img1, 512, 80);
+        // putimage(50, 180, &img1);
+        // SetWorkingImage(&img2);
+        // putimage(0, 0, 64, 80, &img1, 256, 0);
+        // SetWorkingImage();
+        // rotateimage(&img3, &img2, angle_tmp * PI / 180.0, BLACK, true);
+        // putimage(50, 300, &img2);
+        // putimage(50, 420, &img3);
+        // angle_tmp += 1;
 
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
             running = false;

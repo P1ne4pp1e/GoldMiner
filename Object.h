@@ -28,6 +28,12 @@ public:
     bool getLapped() { return this->isOverLapped; }
     bool getClicked() { return this->isClicked; }
 
+    void setAngle(double ang) { this->angle = ang; };
+
+    void addAngle(double ang) { this->angle += ang; if (this->angle >= 360.0) this->angle -= 360.0; };
+
+    virtual void rotate() {};
+
     virtual ~Object() {};
 
     virtual void render() {};
@@ -46,6 +52,8 @@ protected:
 
     bool isOverLapped = false;
     bool isClicked = false;
+
+    double angle=0;
 };
 
 #endif
