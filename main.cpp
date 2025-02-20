@@ -248,20 +248,24 @@ int main() {
     auto lastTime = chrono::steady_clock::now();
     double fps = 0.0;
 
+    // 帧率控制相关变量
+    Timer frameTimer;                              // 帧计时器
 
 
     ani_miner.setAngle(0);
     ani_miner.setFrameOrder({0});
 
     timer.start();
+    frameTimer.start();  // 开始测量本帧时间
     while (running) {
+        frameTimer.reset();
         // static IMAGE img, img1, img2(64, 80), img3;
         // loadimage(&img, "./images/miner_sheet.png");
 
         auto currentTime = chrono::steady_clock::now();
         frameCount++;
 
-        // 每秒更新一次帧率
+        // 每半秒更新一次帧率
         if (chrono::duration_cast<chrono::milliseconds>(currentTime - lastTime).count() >= 500) {
             fps = frameCount / (chrono::duration_cast<chrono::milliseconds>(currentTime - lastTime).count() / 1000.0);
             lastTime = currentTime;
@@ -300,6 +304,24 @@ int main() {
         }
 
         EndBatchDraw();
+
+        if (targetFPS > 0) {
+            const double targetFrameTime = 1.0 / targetFPS; // 目标每帧时间（秒）
+            // 帧率控制
+            double frameTime = frameTimer.elapsed();  // 获取本帧实际耗时
+
+            // cout << frameTimer.elapsed() << " " << targetFrameTime << " ";
+            // 动态休眠控制（纳秒精度）
+            if (frameTime < targetFrameTime) {
+                // 计算需要休眠的时间（纳秒）
+                double frameTime = frameTimer.elapsed();  // 获取本帧实际耗时
+                double sleepTime = (targetFrameTime * 1e9 - frameTime * 1e9); // 转换为纳秒
+                spinWait(std::chrono::duration<double, std::nano>(sleepTime).count());
+            }
+        }
+
+        // cout << frameTimer.elapsed() << endl;
+
     }
 
     closegraph();

@@ -40,10 +40,20 @@ public:
         paused = false;
     }
 
+
 private:
     std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
     std::chrono::time_point<std::chrono::high_resolution_clock> pause_time;
     bool paused;
 };
+
+void spinWait(double nanoseconds) {
+    auto start = std::chrono::high_resolution_clock::now();
+    auto target = start + std::chrono::nanoseconds(static_cast<long long>(nanoseconds));
+
+    while (std::chrono::high_resolution_clock::now() < target) {
+        // 自旋等待
+    }
+}
 
 #endif
