@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <filesystem>
 #include <chrono>
+#include <windows.h>
 
 #include "Timer.h"
 #include "SmoothScale.h"
@@ -14,6 +15,8 @@
 #include "TriangleObject.h"
 #include "ImageObject.h"
 #include "AnimationObject.h"
+#include "Console.h"
+#include "Commands.h"
 
 #define HEIGHT 240
 #define WIDTH 320
@@ -233,6 +236,18 @@ void Level1() {
 double angle_tmp = 0;
 
 int main() {
+#ifdef EnableConsole
+    Console console;
+
+    // 初始化默认命令
+    InitializeDefaultCommands(console);
+
+    // 添加欢迎消息
+    console.AddLog("Welcome to the Console!");
+    console.AddLog("Type 'help' for available commands.");
+
+    console.Hide();
+#endif
 
     loadingImage(images);
 
@@ -242,7 +257,6 @@ int main() {
 
     level = Level::START_MENU;
 
-    bool running = true;
 
     int frameCount = 0;
     auto lastTime = chrono::steady_clock::now();
@@ -254,6 +268,16 @@ int main() {
 
     ani_miner.setAngle(0);
     ani_miner.setFrameOrder({0});
+
+
+    // 消息循环
+    MSG msg = {};
+
+#ifdef EnableConsole
+    // 添加~键状态跟踪变量
+    static bool prevTildeState = false;
+#endif
+
 
     timer.start();
     frameTimer.start();  // 开始测量本帧时间
@@ -303,7 +327,29 @@ int main() {
             running = false;
         }
 
+#ifdef EnableConsole
+        bool currentTildeState = (GetAsyncKeyState(VK_OEM_3) & 0x8000);
+        if (currentTildeState && !prevTildeState) {
+            console.Toggle();  // 切换控制台状态
+            consoleDisplayed = !consoleDisplayed;
+            cout << "Console Displayed: " << consoleDisplayed << endl;
+        }
+        prevTildeState = currentTildeState;
+#endif
+
+
         EndBatchDraw();
+
+        // cout << frameTimer.elapsed() << endl;
+
+#ifdef EnableConsole
+        if (consoleDisplayed) {
+            running = GetMessage(&msg, nullptr, 0, 0);
+
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+#endif
 
         if (targetFPS > 0) {
             const double targetFrameTime = 1.0 / targetFPS; // 目标每帧时间（秒）
@@ -319,9 +365,6 @@ int main() {
                 spinWait(std::chrono::duration<double, std::nano>(sleepTime).count());
             }
         }
-
-        // cout << frameTimer.elapsed() << endl;
-
     }
 
     closegraph();
