@@ -1,3 +1,11 @@
+#include "ImageObject.h"
+#include "TextObject.h"
+#include "TriangleObject.h"
+#include "AnimationObject.h"
+#include "LineObject.h"
+#include "imgCfg.h"
+#include "Timer.h"
+
 #ifndef LEVEL_CFG_H
 #define LEVEL_CFG_H
 
@@ -18,5 +26,50 @@ extern Level level;         // 当前关卡
 extern int SCORE;           // 当前得分
 extern int HIGHSCORE;       // 最高得分
 extern int targetScore;     // 目标得分
+
+extern double hookAngularVelocity;
+extern int hookState;
+extern double hookLength;
+extern double hookVel[3];
+
+extern Timer timer;
+
+extern ImageObject img_bgStartMenu;
+
+extern TextObject bt_startGame;
+extern TextObject bt_highScore;
+
+extern TriangleObject tri_startGame;
+extern TriangleObject tri_highScore;
+
+
+
+extern ImageObject img_bgGoal;
+extern ImageObject img_textGoldminer;
+
+extern ImageObject img_panel;
+
+extern TextObject txt_panelLine1;
+extern TextObject txt_panelLine2_1;
+extern TextObject txt_panelLine2_2;
+
+
+
+extern ImageObject img_bgTop;
+extern ImageObject img_bgLevelA;
+
+extern AnimationObject ani_miner;
+
+extern LineObject rope;
+
+extern AnimationObject ani_hookSheet;
+
+void StartMenu();
+
+void HighScore();
+
+void ShowTarget();
+
+void Level1();
 
 #endif // LEVEL_CFG_H

@@ -20,6 +20,7 @@ public:
     void update() override;
     void setFrameOrder(const std::vector<int>& newFrameOrder);
     void setFrameDuration(double newFrameDuration);
+    void setPivot(double X, double Y);
 
 private:
     IMAGE* img;
@@ -29,8 +30,8 @@ private:
     double frameDuration; // Duration of each frame in seconds
     int currentFrame;
     Timer timer;
-    int pivotX;
-    int pivotY;
+    double pivotX;
+    double pivotY;
 };
 
 #endif // ANIMATIONOBJECT_H

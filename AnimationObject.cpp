@@ -11,8 +11,8 @@ void AnimationObject::render() {
         const auto& [dstWidth, dstHeight, srcX, srcY] = this->frames[this->frameOrder[this->currentFrame]];
 
         // 计算缩放后的宽度和高度
-        int scaledDstWidth = (dstWidth + (dstWidth / 2 - this->pivotX) * 2) * scaleFactor;
-        int scaledDstHeight = (dstHeight + (dstHeight / 2 - this->pivotY) * 2) * scaleFactor;
+        int scaledDstWidth = (1.0 * dstWidth + (1.0 * dstWidth / 2 - this->pivotX) * 2) * scaleFactor;
+        int scaledDstHeight = (1.0 * dstHeight + (1.0 * dstHeight / 2 - this->pivotY) * 2) * scaleFactor;
 
         if (this->angle == 0.0) {
             // 显示当前帧
@@ -28,11 +28,11 @@ void AnimationObject::render() {
             SetWorkingImage(&tempMask);
             setfillcolor(WHITE);
             solidrectangle(0, 0, scaledDstWidth, scaledDstHeight);
-            putimage((dstWidth / 2 - this->pivotX) * 2 * scaleFactor, (dstHeight / 2 - this->pivotY) * 2 * scaleFactor, scaledDstWidth, scaledDstHeight, this->mask, srcX * scaleFactor, srcY * scaleFactor);
+            putimage(1.0 * (1.0 * dstWidth / 2 - 1.0 * this->pivotX) * 2 * scaleFactor, 1.0 * (1.0 * dstHeight / 2 - 1.0 * this->pivotY) * 2 * scaleFactor, scaledDstWidth, scaledDstHeight, this->mask, srcX * scaleFactor, srcY * scaleFactor);
 
             SetWorkingImage(&tempImage);
             cleardevice();
-            putimage((dstWidth / 2 - this->pivotX) * 2 * scaleFactor, (dstHeight / 2 - this->pivotY) * 2 * scaleFactor, scaledDstWidth, scaledDstHeight, this->img, srcX * scaleFactor, srcY * scaleFactor);
+            putimage(1.0 * (1.0 * dstWidth / 2 - 1.0 * this->pivotX) * 2 * scaleFactor, 1.0 * (1.0 * dstHeight / 2 - 1.0 * this->pivotY) * 2 * scaleFactor, scaledDstWidth, scaledDstHeight, this->img, srcX * scaleFactor, srcY * scaleFactor);
 
             SetWorkingImage();
 
@@ -40,8 +40,8 @@ void AnimationObject::render() {
             rotateimage(&showMask, &tempMask, this->angle * (PI / 180.0), WHITE, true);
 
             // 调整位置以考虑旋转中心
-            int newX = (this->x + this->pivotX) * scaleFactor - showImage.getwidth() / 2;
-            int newY = (this->y + this->pivotY) * scaleFactor - showImage.getheight() / 2;
+            int newX = 1.0 * (1.0 * this->x + 1.0 * this->pivotX) * scaleFactor - 1.0 * showImage.getwidth() / 2;
+            int newY = 1.0 * (1.0 * this->y + 1.0 * this->pivotY) * scaleFactor - 1.0 * showImage.getheight() / 2;
 
             putimage(newX, newY, &showMask, SRCAND);
             putimage(newX, newY, &showImage, SRCPAINT);
@@ -63,4 +63,9 @@ void AnimationObject::setFrameOrder(const std::vector<int>& newFrameOrder) {
 
 void AnimationObject::setFrameDuration(double newFrameDuration) {
     this->frameDuration = newFrameDuration;
+}
+
+void AnimationObject::setPivot(double X, double Y) {
+    this->pivotX = X;
+    this->pivotY = Y;
 }

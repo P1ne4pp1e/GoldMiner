@@ -21,16 +21,25 @@ add_executable(GoldMiner main.cpp
         FrameInfo.cpp
         levelCfg.cpp
         windowCfg.cpp
+        imgCfg.cpp
 
-        AnimationObject.cpp
-        commands.cpp
-        Console.cpp
-        ImageObject.cpp
         ImageProcessing.cpp
+        Timer.cpp
+
+        Object.cpp
+        AnimationObject.cpp
+        ImageObject.cpp
         LineObject.cpp
         TextObject.cpp
-        Timer.cpp
         TriangleObject.cpp
+
+        StartMenu.cpp
+        HighScore.cpp
+        ShowTarget.cpp
+        Level_A.cpp
+
+        commands.cpp
+        Console.cpp
 )
 
 target_link_libraries(GoldMiner PRIVATE user32 gdi32 kernel32 shell32 ole32 oleaut32 uuid comdlg32 advapi32)

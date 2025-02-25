@@ -13,7 +13,7 @@ using namespace std;
 #define IMG_BG_TOP "./images/bg_top.png"
 #define IMG_MINER_SHIEET "./images/miner_sheet.png"
 #define IMG_BG_LEVEL_A "./images/bg_level_A.png"
-
+#define IMG_HOOK_SHEET "./images/hook_sheet.png"
 
 #define IMG_MASK_BG_START_MENU "./images/mask_bg_start_menu.bmp"
 #define IMG_MASK_BG_GOAL "./images/mask_bg_goal.bmp"
@@ -22,64 +22,56 @@ using namespace std;
 #define IMG_MASK_BG_TOP "./images/mask_bg_top.bmp"
 #define IMG_MASK_MINER_SHIEET "./images/mask_miner_sheet.bmp"
 #define IMG_MASK_BG_LEVEL_A "./images/mask_bg_level_A.bmp"
+#define IMG_MASK_HOOK_SHEET "./images/mask_hook_sheet.bmp"
 
-static IMAGE bg_start_menu;
-static IMAGE bg_goal;
-static IMAGE text_goldminer;
-static IMAGE panel;
-static IMAGE bg_top;
-static IMAGE miner_sheet;
-static IMAGE bg_level_A;
+// 图片变量声明
+extern IMAGE bg_start_menu;
+extern IMAGE bg_goal;
+extern IMAGE text_goldminer;
+extern IMAGE panel;
+extern IMAGE bg_top;
+extern IMAGE miner_sheet;
+extern IMAGE bg_level_A;
+extern IMAGE hook_sheet;
 
-static IMAGE mask_bg_start_menu;
-static IMAGE mask_bg_goal;
-static IMAGE mask_text_goldminer;
-static IMAGE mask_panel;
-static IMAGE mask_bg_top;
-static IMAGE mask_miner_sheet;
-static IMAGE mask_bg_level_A;
+extern IMAGE mask_bg_start_menu;
+extern IMAGE mask_bg_goal;
+extern IMAGE mask_text_goldminer;
+extern IMAGE mask_panel;
+extern IMAGE mask_bg_top;
+extern IMAGE mask_miner_sheet;
+extern IMAGE mask_bg_level_A;
+extern IMAGE mask_hook_sheet;
 
+// 图片信息结构体声明
 struct Images {
     IMAGE* name;
     string path;
     int width;
     int height;
-    Images(IMAGE* name, string path, int width, int height) : name(name), path(path), width(width), height(height) {}
+    Images(IMAGE* name, string path, int width, int height);
 };
 
-Images BG_START_MENU(&bg_start_menu, IMG_BG_START_MENU, 320, 240);
-Images BG_GOAL(&bg_goal, IMG_BG_GOAL, 320, 240);
-Images TEXT_GOLDMINER(&text_goldminer, IMG_TEXT_GOLDMINER, 212, 43);
-Images PANEL(&panel, IMG_PANEL, 266, 120);
-Images BG_TOP(&bg_top, IMG_BG_TOP, 320, 40);
-Images MINER_SHEET(&miner_sheet, IMG_MINER_SHIEET, 256, 40);
-Images BG_LEVEL_A(&bg_level_A, IMG_BG_LEVEL_A, 320, 200);
+// 图像对象声明
+extern Images BG_START_MENU;
+extern Images BG_GOAL;
+extern Images TEXT_GOLDMINER;
+extern Images PANEL;
+extern Images BG_TOP;
+extern Images MINER_SHEET;
+extern Images BG_LEVEL_A;
+extern Images HOOK_SHEET;
 
-Images MASK_BG_START_MENU(&mask_bg_start_menu, IMG_MASK_BG_START_MENU, 320, 240);
-Images MASK_BG_GOAL(&mask_bg_goal, IMG_MASK_BG_GOAL, 320, 240);
-Images MASK_TEXT_GOLDMINER(&mask_text_goldminer, IMG_MASK_TEXT_GOLDMINER, 212, 43);
-Images MASK_PANEL(&mask_panel, IMG_MASK_PANEL, 266, 120);
-Images MASK_BG_TOP(&mask_bg_top, IMG_MASK_BG_TOP, 320, 40);
-Images MASK_MINER_SHEET(&mask_miner_sheet, IMG_MASK_MINER_SHIEET, 256, 40);
-Images MASK_BG_LEVEL_A(&mask_bg_level_A, IMG_MASK_BG_LEVEL_A, 320, 200);
+extern Images MASK_BG_START_MENU;
+extern Images MASK_BG_GOAL;
+extern Images MASK_TEXT_GOLDMINER;
+extern Images MASK_PANEL;
+extern Images MASK_BG_TOP;
+extern Images MASK_MINER_SHEET;
+extern Images MASK_BG_LEVEL_A;
+extern Images MASK_HOOK_SHEET;
 
-vector<Images> images = {
-    BG_START_MENU,
-    BG_GOAL,
-    TEXT_GOLDMINER,
-    PANEL,
-    BG_TOP,
-    MINER_SHEET,
-    BG_LEVEL_A,
+// 所有图片对象的集合
+extern vector<Images> images;
 
-
-    MASK_BG_START_MENU,
-    MASK_BG_GOAL,
-    MASK_TEXT_GOLDMINER,
-    MASK_PANEL,
-    MASK_BG_TOP,
-    MASK_MINER_SHEET,
-    MASK_BG_LEVEL_A
-};
-
-#endif
+#endif // IMG_CFG
