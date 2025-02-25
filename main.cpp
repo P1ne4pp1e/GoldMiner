@@ -5,18 +5,20 @@
 #include <chrono>
 #include <windows.h>
 
-#include "Timer.h"
-#include "SmoothScale.h"
-#include "windowCfg.h"
-#include "imgCfg.h"
-#include "levelCfg.h"
-#include "FrameInfo.h"
-#include "TextObject.h"
-#include "TriangleObject.h"
-#include "ImageObject.h"
-#include "AnimationObject.h"
-#include "Console.h"
-#include "Commands.h"
+#include "src/Timer.h"
+#include "src/windowCfg.h"
+#include "src/imgCfg.h"
+#include "src/levelCfg.h"
+#include "src/FrameInfo.h"
+#include "src/ImageObject.h"
+#include "src/TextObject.h"
+#include "src/TriangleObject.h"
+#include "src/ImageProcessing.h"
+#include "src/AnimationObject.h"
+#include "src/LineObject.h"
+
+#include "src/Console.h"
+#include "src/Commands.h"
 
 #define HEIGHT 240
 #define WIDTH 320
@@ -35,9 +37,9 @@ void loadingImage(const vector<Images>& images) {
     std::filesystem::path currentPath = std::filesystem::current_path();
 
     for (int i = 0; i < images.size(); i++) {
-        IMAGE img;
-        loadimage(&img, images[i].path.c_str(), images[i].width, images[i].height);
-        smoothScale(&img, images[i].name, images[i].width * scaleFactor, images[i].height * scaleFactor);
+        IMAGE img1, img2;
+        loadimage(&img1, images[i].path.c_str(), images[i].width, images[i].height);
+        smoothScale(&img1, images[i].name, images[i].width * scaleFactor, images[i].height * scaleFactor);
     }
 }
 
@@ -65,6 +67,8 @@ ImageObject img_bgTop(0x00020000, 0, 0, true, &bg_top, &mask_bg_top);
 ImageObject img_bgLevelA(0x00020001, 0, 40, true, &bg_level_A, &mask_bg_level_A);
 
 AnimationObject ani_miner(0x00020003, 150, -2, true, &miner_sheet, &mask_miner_sheet, miner_sheet_frames, miner_sheet_duration);
+
+LineObject rope(0x00020004, 157.7, 29, true, 50, 270, RGB(22, 22, 22), 5);
 
 void StartMenu() {
     img_bgStartMenu.render();
@@ -209,7 +213,7 @@ void ShowTarget() {
     txt_panelLine1.render();
     txt_panelLine2_1.render();
 
-    if ( timer.elapsed() > 3.0 ) {
+    if ( timer.elapsed() > 1.0 ) {
         timer.reset();
         level = Level::LEVEL_1;
     }
@@ -220,20 +224,31 @@ void ShowTarget() {
     }
 }
 
+
+double angle_tmp = 0;
+
+double frameTime = 1;
+
+
+
 void Level1() {
     img_bgTop.render();
     img_bgLevelA.render();
 
-    ani_miner.setFrameDuration(0.2);
-    ani_miner.addAngle(1);
+    // ani_miner.setFrameDuration(0.2);
+    // ani_miner.addAngle(1);
+
+    // rope.addAngle(1);
 
     ani_miner.render();
 
+    rope.render();
 
+    rope.update(frameTime);
+    // cout << frameTime << endl;
     ani_miner.update();
 }
 
-double angle_tmp = 0;
 
 int main() {
 #ifdef EnableConsole
@@ -268,6 +283,8 @@ int main() {
 
     ani_miner.setAngle(0);
     ani_miner.setFrameOrder({0});
+
+    rope.setAngularVelocity(30);
 
 
     // 消息循环
@@ -354,15 +371,17 @@ int main() {
         if (targetFPS > 0) {
             const double targetFrameTime = 1.0 / targetFPS; // 目标每帧时间（秒）
             // 帧率控制
-            double frameTime = frameTimer.elapsed();  // 获取本帧实际耗时
+            frameTime = frameTimer.elapsed();  // 获取本帧实际耗时
 
             // cout << frameTimer.elapsed() << " " << targetFrameTime << " ";
             // 动态休眠控制（纳秒精度）
             if (frameTime < targetFrameTime) {
                 // 计算需要休眠的时间（纳秒）
-                double frameTime = frameTimer.elapsed();  // 获取本帧实际耗时
+                frameTime = frameTimer.elapsed();  // 获取本帧实际耗时
                 double sleepTime = (targetFrameTime * 1e9 - frameTime * 1e9); // 转换为纳秒
                 spinWait(std::chrono::duration<double, std::nano>(sleepTime).count());
+
+                frameTime = targetFrameTime;
             }
         }
     }

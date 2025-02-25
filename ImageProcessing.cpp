@@ -1,10 +1,5 @@
-#ifndef SMOOTH_SCALE_H
-#define SMOOTH_SCALE_H
+#include "src/ImageProcessing.h"
 
-#include <iostream>
-#include <windows.h>
-
-// 双线性插值缩放函数
 void smoothScale(IMAGE* src, IMAGE* dst, int newWidth, int newHeight) {
     int srcWidth = src->getwidth();
     int srcHeight = src->getheight();
@@ -65,4 +60,48 @@ void smoothScale(IMAGE* src, IMAGE* dst, int newWidth, int newHeight) {
     }
 }
 
-#endif // SMOOTH_SCALE_H
+// 图像锐化函数定义
+void sharpenImage(IMAGE* src, IMAGE* dst, double sharpenValue) {
+    // 拉普拉斯锐化卷积核
+    const double kernel[3][3] = {
+        { 0, -1, 0 },
+        { -1, 4 + sharpenValue, -1 },
+        { 0, -1, 0 }
+    };
+
+    int width = src->getwidth();
+    int height = src->getheight();
+
+    // 确保目标图像具有相同的大小
+    dst->Resize(width, height);
+
+    // 遍历图像像素并应用卷积核
+    for (int y = 1; y < height - 1; ++y) {
+        for (int x = 1; x < width - 1; ++x) {
+            double r = 0, g = 0, b = 0;
+            for (int ky = -1; ky <= 1; ++ky) {
+                for (int kx = -1; kx <= 1; ++kx) {
+                    SetWorkingImage(src);
+                    int pixelColor = getpixel(x + kx, y + ky);
+                    COLORREF color = RGB(GetRValue(pixelColor), GetGValue(pixelColor), GetBValue(pixelColor));
+                    r += GetRValue(color) * kernel[ky + 1][kx + 1];
+                    g += GetGValue(color) * kernel[ky + 1][kx + 1];
+                    b += GetBValue(color) * kernel[ky + 1][kx + 1];
+                }
+            }
+
+            // 确保颜色值在合法范围内
+            r = std::min(std::max(0.0, r), 255.0);
+            g = std::min(std::max(0.0, g), 255.0);
+            b = std::min(std::max(0.0, b), 255.0);
+
+            COLORREF newColor = RGB(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b));
+
+            SetWorkingImage(dst);
+            putpixel(x, y, newColor);
+
+
+            SetWorkingImage();
+        }
+    }
+}

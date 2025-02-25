@@ -1,11 +1,7 @@
-#ifndef FRAMEINFO_H
-#define FRAMEINFO_H
+#include "src/FrameInfo.h"
 
-#include <bits/stdc++.h>
-
-using FrameInfo = std::tuple<int, int, int, int>;
-
-double miner_sheet_duration = 0.5;
+// 全局变量定义与初始化
+double miner_sheet_duration = 0.5;  // 默认持续时间为0.5秒
 std::vector<FrameInfo> miner_sheet_frames = {
     {32, 40, 0, 0},
     {32, 40, 32, 0},
@@ -15,6 +11,4 @@ std::vector<FrameInfo> miner_sheet_frames = {
     {32, 40, 160, 0},
     {32, 40, 192, 0},
     {32, 40, 224, 0}
-};
-
-#endif
+};  // 默认的帧信息

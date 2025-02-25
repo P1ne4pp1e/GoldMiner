@@ -11,15 +11,20 @@ using namespace std;
 
 class Object {
 public:
-    Object(int x, int y, bool isDisplayed, uint32_t id) : x(x), y(y), isDisplayed(isDisplayed), id(id) {
+    struct Point {
+        double x, y;
+        Point(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
     };
 
-    int getX() { return this->x; };
-    int getY() { return this->y; };
+    Object(double x, double y, bool isDisplayed, uint32_t id) : x(x), y(y), isDisplayed(isDisplayed), id(id) {
+    };
+
+    double getX() { return this->x; };
+    double getY() { return this->y; };
     int getId() { return this->id; };
 
-    void setX(int x) { this->x = x; };
-    void setY(int y) { this->y = y; };
+    void setX(double x) { this->x = x; };
+    void setY(double y) { this->y = y; };
 
     void changeDisp() { this->isDisplayed ^= 1; };
 
@@ -31,6 +36,15 @@ public:
     void setAngle(double ang) { this->angle = ang; };
 
     void addAngle(double ang) { this->angle += ang; if (this->angle >= 360.0) this->angle -= 360.0; };
+
+    void setAngularVelocity(double newAngularVelocity) { this->angularVelocity = newAngularVelocity; }
+
+
+    double getAngle() {return this->angle;}
+
+    double getAnglularVelocity() {return this->angularVelocity;}
+
+
 
     virtual void rotate() {};
 
@@ -45,15 +59,16 @@ public:
     virtual void update() {};
 
 protected:
-    int x;
-    int y;
+    double x;
+    double y;
     uint32_t id;
     bool isDisplayed;
 
     bool isOverLapped = false;
     bool isClicked = false;
 
-    double angle=0;
+    double angle = 0;
+    double angularVelocity = 0; // 角速度
 };
 
 #endif
