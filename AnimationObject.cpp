@@ -7,12 +7,14 @@ AnimationObject::AnimationObject(uint32_t id, int x, int y, bool isDisplayed, IM
 
 void AnimationObject::render() {
     if (this->isDisplayed && !this->frameOrder.empty()) {
+
         // 获取当前帧信息
         const auto& [dstWidth, dstHeight, srcX, srcY] = this->frames[this->frameOrder[this->currentFrame]];
 
         // 计算缩放后的宽度和高度
         int scaledDstWidth = (1.0 * dstWidth + (1.0 * dstWidth / 2 - this->pivotX) * 2) * scaleFactor;
         int scaledDstHeight = (1.0 * dstHeight + (1.0 * dstHeight / 2 - this->pivotY) * 2) * scaleFactor;
+        cout << 111 << endl;
 
         if (this->angle == 0.0) {
             // 显示当前帧

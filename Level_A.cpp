@@ -17,7 +17,11 @@
 
 double hookNowAngVel = hookAngularVelocity;
 
+
+
 void Level1() {
+    rope.setAngularVelocity(hookAngularVelocity);
+    ani_hookSheet.setPivot(6.5, 0);
 
     // cout << rope.getAngle() <<endl;
     if (rope.getAngle()<=15 || rope.getAngle()>=165) {
@@ -68,7 +72,6 @@ void Level1() {
 
     rope.addLength(hookVel[hookState] * frameTime);
 
-
     img_bgTop.render();
     img_bgLevelA.render();
 
@@ -78,6 +81,7 @@ void Level1() {
     // rope.addAngle(1);
 
     ani_miner.render();
+
 
     ani_hookSheet.render();
     rope.render();

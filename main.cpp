@@ -76,13 +76,6 @@ int main() {
     Timer frameTimer;                              // 帧计时器
 
 
-    ani_miner.setAngle(0);
-    ani_miner.setFrameOrder({0});
-
-    rope.setAngularVelocity(hookAngularVelocity);
-
-    ani_hookSheet.setFrameOrder({0});
-    ani_hookSheet.setPivot(6.5, 0);
 
 
     // 消息循环

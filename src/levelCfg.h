@@ -6,6 +6,8 @@
 #include "imgCfg.h"
 #include "Timer.h"
 
+#include "FrameInfo.h"
+
 #ifndef LEVEL_CFG_H
 #define LEVEL_CFG_H
 
