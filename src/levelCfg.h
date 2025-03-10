@@ -6,8 +6,6 @@
 #include "imgCfg.h"
 #include "Timer.h"
 
-#include "FrameInfo.h"
-
 #ifndef LEVEL_CFG_H
 #define LEVEL_CFG_H
 
@@ -65,6 +63,18 @@ extern AnimationObject ani_miner;
 extern LineObject rope;
 
 extern AnimationObject ani_hookSheet;
+
+extern TextObject txt_moneyTitle;
+extern TextObject txt_moneyValue;
+
+extern TextObject txt_goalTitle;
+extern TextObject txt_goalValue;
+
+extern TextObject txt_timeTitle;
+extern TextObject txt_timeValue;
+
+extern TextObject txt_levelTitle;
+extern TextObject txt_levelValue;
 
 void StartMenu();
 

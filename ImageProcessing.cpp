@@ -3,9 +3,19 @@
 void smoothScale(IMAGE* src, IMAGE* dst, int newWidth, int newHeight) {
     int srcWidth = src->getwidth();
     int srcHeight = src->getheight();
+    if (srcWidth == newWidth && srcHeight == newHeight) {
+        *dst = *src;
+        return;
+    }
 
     // 创建目标图像
     dst->Resize(newWidth, newHeight);
+
+    // 关键修复：初始化目标图像背景为白色（或任何合适的颜色）
+    SetWorkingImage(dst);
+    setbkcolor(WHITE);  // 设置背景色为白色
+    cleardevice();      // 使用背景色清空图像
+    SetWorkingImage(NULL);  // 恢复默认工作区
 
     // 获取像素缓冲区
     DWORD* srcBuf = GetImageBuffer(src);

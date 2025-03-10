@@ -20,18 +20,18 @@ double hookNowAngVel = hookAngularVelocity;
 
 
 void Level1() {
-    rope.setAngularVelocity(hookAngularVelocity);
+    txt_timeValue.setText(to_string(60-int(timer.elapsed())));
     ani_hookSheet.setPivot(6.5, 0);
 
-    // cout << rope.getAngle() <<endl;
-    if (rope.getAngle()<=15 || rope.getAngle()>=165) {
-        rope.setAngularVelocity(-rope.getAngularVelocity());
-    }
 
-    // cout << frameTime << endl;
-    rope.update(frameTime);
-    // cout << frameTime << endl;
-    ani_miner.update();
+    // cout << rope.getAngle() <<endl;
+    if (rope.getAngle()<=15) {
+        rope.setAngularVelocity(hookAngularVelocity);
+    }
+    if (rope.getAngle()>=165) {
+        rope.setAngularVelocity(-hookAngularVelocity);
+    }
+    // cout << rope.getAngularVelocity() << " " << rope.getAngle() << " ";
 
     ani_hookSheet.setX(rope.getLengthPoint(-7.5).x - 6.5);
     ani_hookSheet.setY(rope.getLengthPoint(-7.5).y);
@@ -60,6 +60,7 @@ void Level1() {
         }
     }
 
+
     if (rope.getAngularVelocity() != 0) {
         hookNowAngVel = rope.getAngularVelocity();
     }
@@ -72,6 +73,11 @@ void Level1() {
 
     rope.addLength(hookVel[hookState] * frameTime);
 
+    // cout << frameTime << endl;
+    rope.update(frameTime);
+    ani_hookSheet.update();
+    ani_miner.update();
+
     img_bgTop.render();
     img_bgLevelA.render();
 
@@ -83,6 +89,18 @@ void Level1() {
     ani_miner.render();
 
 
-    ani_hookSheet.render();
     rope.render();
+    ani_hookSheet.render();
+
+    txt_moneyTitle.render();
+    txt_moneyValue.render();
+
+    txt_goalTitle.render();
+    txt_goalValue.render();
+
+    txt_timeTitle.render();
+    txt_timeValue.render();
+
+    txt_levelTitle.render();
+    txt_levelValue.render();
 }

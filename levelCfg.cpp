@@ -1,4 +1,5 @@
 #include "src/LevelCfg.h"
+#include "src/FrameInfo.h"
 
 // 全局变量定义与初始化
 Level level = START_MENU;    // 默认初始关卡为 START_MENU
@@ -8,7 +9,7 @@ int targetScore = 0;         // 初始目标得分为 0
 
 double hookAngularVelocity = 75;
 int hookState = 0;
-double hookLength = 8;
+double hookLength = 12;
 double hookVel[3] = {
     0,
     100,
@@ -41,8 +42,16 @@ TextObject txt_panelLine2_2(0x00010005, 75, 145, true, _T(""), TextObject::FONT_
 ImageObject img_bgTop(0x00020000, 0, 0, true, &bg_top, &mask_bg_top);
 ImageObject img_bgLevelA(0x00020001, 0, 40, true, &bg_level_A, &mask_bg_level_A);
 
-AnimationObject ani_miner(0x00020003, 150, -2, true, &miner_sheet, &mask_miner_sheet, miner_sheet_frames, miner_sheet_duration);
+LineObject rope(0x00020004, 157.7, 26, true, hookLength, 90, RGB(46, 46, 46), 2);
 
-LineObject rope(0x00020004, 157.7, 29.8, true, hookLength, 90, RGB(22, 22, 22), 2);
+TextObject txt_moneyTitle(0x00020006, 5, 4, true, _T("MONEY"), TextObject::FONT_VISITOR1, 10, RGB(194, 136, 4));
+TextObject txt_moneyValue(0x00020007, 45, 4, true, _T("$"), TextObject::FONT_VISITOR1, 10, RGB(67, 160, 71));
 
-AnimationObject ani_hookSheet(0x00020005, 0, 0, true, &hook_sheet, &mask_hook_sheet, hook_sheet_frames, hook_sheet_duration);
+TextObject txt_goalTitle(0x00020008, 12, 14, true, _T("GOAL"), TextObject::FONT_VISITOR1, 10, RGB(194, 136, 4));
+TextObject txt_goalValue(0x00020009, 45, 14, true, _T("$"), TextObject::FONT_VISITOR1, 10, RGB(67, 160, 71));
+
+TextObject txt_timeTitle(0x0002000A, 252, 14, true, _T("TIME:"), TextObject::FONT_VISITOR1, 10, RGB(194, 136, 4));
+TextObject txt_timeValue(0x0002000B, 290, 14, true, _T("$"), TextObject::FONT_VISITOR1, 10, RGB(239, 108, 0));
+
+TextObject txt_levelTitle(0x0002000C, 245, 24, true, _T("LEVEL:"), TextObject::FONT_VISITOR1, 10, RGB(194, 136, 4));
+TextObject txt_levelValue(0x0002000D, 290, 24, true, _T("$"), TextObject::FONT_VISITOR1, 10, RGB(239, 108, 0));

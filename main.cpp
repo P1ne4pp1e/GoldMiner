@@ -59,6 +59,7 @@ int main() {
     console.Hide();
 #endif
 
+
     loadingImage(images);
 
     initgraph(WIDTH * scaleFactor, HEIGHT * scaleFactor);
@@ -76,6 +77,8 @@ int main() {
     Timer frameTimer;                              // 帧计时器
 
 
+    ani_miner.setFrameOrder({0});
+    ani_hookSheet.setFrameOrder({0});
 
 
     // 消息循环
@@ -107,6 +110,28 @@ int main() {
         BeginBatchDraw();
         cleardevice();
 
+        txt_moneyValue.setText("$"+to_string(SCORE));
+        txt_goalValue.setText("$"+to_string(targetScore));
+        switch (level) {
+            case Level::LEVEL_1:
+                txt_levelValue.setText( _T("1") );
+            break;
+            case Level::LEVEL_2:
+                txt_levelValue.setText( _T("2") );
+            break;
+            case Level::LEVEL_3:
+                txt_levelValue.setText( _T("3") );
+            break;
+            case Level::LEVEL_4:
+                txt_levelValue.setText( _T("4") );
+            break;
+            case Level::LEVEL_5:
+                txt_levelValue.setText( _T("5") );
+            break;
+            default:
+                txt_levelValue.setText( _T("0") );
+        }
+
         if (level == Level::START_MENU) {
             StartMenu();
         }else if (level == Level::HIGH_SCORE) {
@@ -117,9 +142,11 @@ int main() {
             Level1();
         }
 
-        SET_SINGLE_FONT(20, 0, "Kurland", "fonts/Kurland.ttf");
+        SET_SINGLE_FONT(15, 0, "Pixel Square", "fonts/Pixel-Square-10-1.ttf");
+        // SET_SINGLE_FONT(15, 0, "04b_21", "fonts/digit.ttf");
         settextcolor(RGB(255, 255, 255));
-        outtextxy(WIDTH * scaleFactor - 70, 10, ("FPS " + to_string(static_cast<int>(fps))).c_str());
+        outtextxy(WIDTH * scaleFactor - 80, 10, "FPS ");
+        outtextxy(WIDTH * scaleFactor - textwidth(to_string(static_cast<int>(fps)).c_str()) - 5, 10, to_string(static_cast<int>(fps)).c_str());
 
         // smoothScale(&img, &img1, 512, 80);
         // putimage(50, 180, &img1);

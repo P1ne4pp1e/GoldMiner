@@ -8,13 +8,38 @@ AnimationObject::AnimationObject(uint32_t id, int x, int y, bool isDisplayed, IM
 void AnimationObject::render() {
     if (this->isDisplayed && !this->frameOrder.empty()) {
 
-        // 获取当前帧信息
-        const auto& [dstWidth, dstHeight, srcX, srcY] = this->frames[this->frameOrder[this->currentFrame]];
+        // Make sure currentFrame is within valid range
+        if (this->currentFrame < 0 || this->currentFrame >= this->frameOrder.size()) {
+            // Reset to a valid frame
+            this->currentFrame = 0;
+            return;
+        }
+
+        // Get frame index safely
+        int frameIndex = this->frameOrder[this->currentFrame];
+
+        // cout << this->frames.size() << endl;
+        // Validate frame index
+        if (frameIndex < 0 || frameIndex >= this->frames.size()) {
+            // Skip rendering if frame index is invalid
+            // cout << 111 << endl;
+            return;
+        }
+
+        // Now safely get the current frame information
+        const auto& [dstWidth, dstHeight, srcX, srcY] = this->frames[frameIndex];
+
+        // Debug output (can be removed later)
+        // std::cout << "Frame: " << this->currentFrame << "/" << this->frameOrder.size()
+        //           << " Index: " << frameIndex << "/" << this->frames.size()
+        //           << " W: " << dstWidth << " H: " << dstHeight
+        //           << " X: " << srcX << " Y: " << srcY << std::endl;
+
 
         // 计算缩放后的宽度和高度
         int scaledDstWidth = (1.0 * dstWidth + (1.0 * dstWidth / 2 - this->pivotX) * 2) * scaleFactor;
         int scaledDstHeight = (1.0 * dstHeight + (1.0 * dstHeight / 2 - this->pivotY) * 2) * scaleFactor;
-        cout << 111 << endl;
+        // cout << 111 << endl;
 
         if (this->angle == 0.0) {
             // 显示当前帧
