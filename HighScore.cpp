@@ -19,7 +19,7 @@ void HighScore() {
     img_panel.render();
 
     txt_panelLine1.setText("High Score: ");
-    txt_panelLine2_1.setText( "$" + to_string(HIGHSCORE) );
+    txt_panelLine2_1.setText( "$" + to_string(player["player"]["HIGHSCORE"].as<int>()) );
     txt_panelLine2_2.setX(txt_panelLine2_1.getX() + txt_panelLine2_1.getWidth() + 7.0);
 
     switch (level) {

@@ -70,6 +70,41 @@ void smoothScale(IMAGE* src, IMAGE* dst, int newWidth, int newHeight) {
     }
 }
 
+void nearestNeighborScale(IMAGE* src, IMAGE* dst, int newWidth, int newHeight) {
+    // Get source image properties
+    DWORD* pSrcBuffer = GetImageBuffer(src);
+    int srcWidth = src->getwidth();
+    int srcHeight = src->getheight();
+
+    // Create or resize destination image if needed
+    if (dst->getwidth() != newWidth || dst->getheight() != newHeight) {
+        *dst = IMAGE(newWidth, newHeight);
+    }
+
+    // Get destination buffer
+    DWORD* pDestBuffer = GetImageBuffer(dst);
+
+    // Calculate scale factors
+    double xRatio = (double)srcWidth / newWidth;
+    double yRatio = (double)srcHeight / newHeight;
+
+    // Scale using nearest neighbor
+    for (int y = 0; y < newHeight; y++) {
+        for (int x = 0; x < newWidth; x++) {
+            // Find source pixel coordinates
+            int srcX = (int)(x * xRatio);
+            int srcY = (int)(y * yRatio);
+
+            // Ensure within bounds
+            srcX = std::min(srcX, srcWidth - 1);
+            srcY = std::min(srcY, srcHeight - 1);
+
+            // Copy pixel directly
+            pDestBuffer[y * newWidth + x] = pSrcBuffer[srcY * srcWidth + srcX];
+        }
+    }
+}
+
 // 图像锐化函数定义
 void sharpenImage(IMAGE* src, IMAGE* dst, double sharpenValue) {
     // 拉普拉斯锐化卷积核

@@ -16,9 +16,14 @@
 #include "src/TriangleObject.h"
 #include "src/AnimationObject.h"
 #include "src/LineObject.h"
+#include "src/Mineral.h"
+#include "src/MineralManager.h"
+#include "src/LevelFunctions.h"
 
 #include "src/Console.h"
 #include "src/Commands.h"
+
+#include <yaml-cpp/yaml.h>
 
 #define HEIGHT 240
 #define WIDTH 320
@@ -39,7 +44,7 @@ void loadingImage(const vector<Images>& images) {
     for (int i = 0; i < images.size(); i++) {
         IMAGE img1, img2;
         loadimage(&img1, images[i].path.c_str(), images[i].width, images[i].height);
-        smoothScale(&img1, images[i].name, images[i].width * scaleFactor, images[i].height * scaleFactor);
+        nearestNeighborScale(&img1, images[i].name, images[i].width * scaleFactor, images[i].height * scaleFactor);
     }
 }
 
@@ -58,13 +63,18 @@ int main() {
 
     console.Hide();
 #endif
-
+    LoadData();
 
     loadingImage(images);
 
     initgraph(WIDTH * scaleFactor, HEIGHT * scaleFactor);
     // setbkcolor(BLACK);
     setbkcolor(GREEN);
+
+
+    // 创建矿物管理器
+    MineralManager mineralManager;
+
 
     level = Level::START_MENU;
 
@@ -107,6 +117,17 @@ int main() {
             frameCount = 0;
         }
 
+        // 如果关卡改变，初始化矿物
+        static Level prevLevel = level;
+        if (prevLevel != level) {
+            if (level == Level::LEVEL_1 || level == Level::LEVEL_2 ||
+                level == Level::LEVEL_3 || level == Level::LEVEL_4 || level == Level::LEVEL_5) {
+                    mineralManager.initializeMinerals(level);
+                }
+            prevLevel = level;
+        }
+
+
         BeginBatchDraw();
         cleardevice();
 
@@ -139,7 +160,10 @@ int main() {
         }else if (level == Level::SHOW_TARGET) {
             ShowTarget();
         }else if (level == Level::LEVEL_1) {
-            Level1();
+            mineralManager.update(frameTime);
+            // cout << &mineralManager << " " << mineralManager.getMinerals().size() << endl;
+            // Level1函数中会调用mineralManager.render()
+            Level1(mineralManager); // 修改Level1函数以接收矿物管理器
         }
 
         SET_SINGLE_FONT(15, 0, "Pixel Square", "fonts/Pixel-Square-10-1.ttf");
@@ -203,6 +227,9 @@ int main() {
             }
         }
     }
+
+    // 清理资源
+    mineralManager.cleanupMinerals();
 
     closegraph();
 

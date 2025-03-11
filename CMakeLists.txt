@@ -4,9 +4,11 @@ project(GoldMiner)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(./EasyX/include)
-link_directories(./EasyX/lib64)
-link_libraries(libeasyx.a)
+set(YAML_CPP_DIR "yaml-cpp")
+
+include_directories(./EasyX/include ${YAML_CPP_DIR}/include)
+link_directories(./EasyX/lib64 ${YAML_CPP_DIR}/lib)
+link_libraries(libeasyx.a libyaml-cpp.dll.a)
 
 
 
@@ -44,6 +46,10 @@ add_executable(GoldMiner
         # 动画对象应在levelCfg前初始化
         AnimationObject.cpp
 
+        Mineral.cpp
+        MineralManager.cpp
+        MineralCfg.cpp
+
         # 关卡配置（依赖于前面所有的初始化）
         levelCfg.cpp
 
@@ -60,5 +66,4 @@ add_executable(GoldMiner
         # 主程序应该最后
         main.cpp
 )
-
-target_link_libraries(GoldMiner PRIVATE user32 gdi32 kernel32 shell32 ole32 oleaut32 uuid comdlg32 advapi32)
+target_link_libraries(GoldMiner PRIVATE yaml-cpp user32 gdi32 kernel32 shell32 ole32 oleaut32 uuid comdlg32 advapi32)

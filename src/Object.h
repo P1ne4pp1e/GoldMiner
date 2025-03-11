@@ -37,6 +37,7 @@ public:
     void setDisp(bool sta);
     bool getLapped();
     bool getClicked();
+    bool getDisplayed();
 
     virtual void rotate();
     virtual void render();

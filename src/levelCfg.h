@@ -5,6 +5,7 @@
 #include "LineObject.h"
 #include "imgCfg.h"
 #include "Timer.h"
+#include <yaml-cpp/yaml.h>
 
 #ifndef LEVEL_CFG_H
 #define LEVEL_CFG_H
@@ -24,13 +25,16 @@ enum Level {
 // 全局变量声明
 extern Level level;         // 当前关卡
 extern int SCORE;           // 当前得分
-extern int HIGHSCORE;       // 最高得分
+// extern int HIGHSCORE;       // 最高得分
 extern int targetScore;     // 目标得分
-
-extern double hookAngularVelocity;
+//
+// extern double hookAngularVelocity;
 extern int hookState;
-extern double hookLength;
-extern double hookVel[3];
+// extern double hookLength;
+// extern double hookVel[3];
+
+
+
 
 extern Timer timer;
 
@@ -76,12 +80,17 @@ extern TextObject txt_timeValue;
 extern TextObject txt_levelTitle;
 extern TextObject txt_levelValue;
 
+
+extern YAML::Node player;
+extern YAML::Node entities;
+extern YAML::Node levels;
+
+void LoadData();
+
 void StartMenu();
 
 void HighScore();
 
 void ShowTarget();
-
-void Level1();
 
 #endif // LEVEL_CFG_H

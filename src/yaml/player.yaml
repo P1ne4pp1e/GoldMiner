@@ -1,0 +1,10 @@
+player:
+  HIGHSCORE: 0
+
+hook:
+  hookAngularVelocity: 75
+  hookLength: 12
+  hookVel:
+    - 0
+    - 100
+    - -200

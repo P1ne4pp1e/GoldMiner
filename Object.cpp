@@ -10,6 +10,7 @@ double Object::getY() { return this->y; }
 int Object::getId() { return this->id; }
 double Object::getAngle() { return this->angle; }
 double Object::getAngularVelocity() { return this->angularVelocity; }
+bool Object::getDisplayed() { return this->isDisplayed; }
 
 // 设置函数实现
 void Object::setX(double x) { this->x = x; }
