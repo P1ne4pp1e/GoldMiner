@@ -1,0 +1,11 @@
+prefix=D:/~Document/_$.Project/GoldMiner/yaml-cpp
+exec_prefix=${prefix}
+includedir=D:/~Document/_$.Project/GoldMiner/yaml-cpp/include
+libdir=D:/~Document/_$.Project/GoldMiner/yaml-cpp/lib
+
+Name: Yaml-cpp
+Description: A YAML parser and emitter for C++
+Version: 0.8.0
+Requires:
+Libs: -L${libdir} -lyaml-cpp
+Cflags: -I${includedir}
