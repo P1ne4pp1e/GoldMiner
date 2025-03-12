@@ -60,16 +60,18 @@ TextObject txt_timeValue(0x0002000B, 290, 14, true, _T("$"), TextObject::FONT_VI
 TextObject txt_levelTitle(0x0002000C, 245, 24, true, _T("LEVEL:"), TextObject::FONT_VISITOR1, 10, RGB(194, 136, 4));
 TextObject txt_levelValue(0x0002000D, 290, 24, true, _T("$"), TextObject::FONT_VISITOR1, 10, RGB(239, 108, 0));
 
-YAML::Node player;
-YAML::Node entities;
-YAML::Node levels;
 
-void LoadData() {
+YAML::Node LoadData(string filename) {
+    YAML::Node node;
     try {
-        player = YAML::LoadFile("src/yaml/player.yaml");
-        entities = YAML::LoadFile("src/yaml/entities.yaml");
-        levels = YAML::LoadFile("src/yaml/levels.yaml");
+        node = YAML::LoadFile(filename);
     } catch (const YAML::Exception& e) {
         std::cerr << "读取游戏数据时出错: " << e.what() << std::endl;
     }
+    return node;
 };
+
+
+YAML::Node player = LoadData("src/yaml/player.yaml");
+YAML::Node entities = LoadData("src/yaml/entities.yaml");
+YAML::Node levels = LoadData("src/yaml/levels.yaml");

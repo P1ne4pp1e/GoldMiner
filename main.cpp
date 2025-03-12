@@ -63,7 +63,6 @@ int main() {
 
     console.Hide();
 #endif
-    LoadData();
 
     loadingImage(images);
 

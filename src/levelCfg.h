@@ -85,7 +85,7 @@ extern YAML::Node player;
 extern YAML::Node entities;
 extern YAML::Node levels;
 
-void LoadData();
+YAML::Node LoadData(string filename);
 
 void StartMenu();
 
