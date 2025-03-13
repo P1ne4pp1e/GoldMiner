@@ -6,18 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(YAML_CPP_DIR "yaml-cpp")
 
-include_directories(./EasyX/include ${YAML_CPP_DIR}/include)
-link_directories(./EasyX/lib64 ${YAML_CPP_DIR}/lib)
-
-# 删除了这行: link_libraries(libeasyx.a libyaml-cpp.dll.a)
+include_directories(./EasyX/include)
+link_directories(./EasyX/lib64)
+link_libraries(libeasyx.a)
 
 # 复制资源文件
 file(COPY ${CMAKE_SOURCE_DIR}/images DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/fonts DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/audios DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/src/yaml DESTINATION ${CMAKE_BINARY_DIR}/src)
 
-# 设置YAML_CPP_DLL定义，告诉编译器你正在使用DLL版本
-add_compile_definitions(YAML_CPP_DLL)
 
 add_executable(GoldMiner
         # 基础配置文件
@@ -46,8 +44,8 @@ add_executable(GoldMiner
         AnimationObject.cpp
 
         Mineral.cpp
-        MineralManager.cpp
         MineralCfg.cpp
+        MineralManager.cpp
 
         # 关卡配置（依赖于前面所有的初始化）
         levelCfg.cpp
@@ -65,6 +63,9 @@ add_executable(GoldMiner
         # 主程序应该最后
         main.cpp
 )
+
+# 添加yaml-cpp作为子目录
+add_subdirectory(yaml-cpp)
 
 # 简化并修复了链接库的顺序
 target_link_libraries(GoldMiner PRIVATE

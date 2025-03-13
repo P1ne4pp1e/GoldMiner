@@ -1,5 +1,22 @@
 #include "src/MineralManager.h"
 
+std::map<std::string, Mineral::MineralType> MineralManager::mineralMap = {
+    {"MiniGold", Mineral::GOLD_MINI},
+    {"NormalGold", Mineral::GOLD_NORMAL},
+    {"NormalGoldPlus", Mineral::GOLD_NORMAL_PLUS},
+    {"BigGold", Mineral::GOLD_BIG},
+    {"MiniRock", Mineral::ROCK_MINI},
+    {"NormalRock", Mineral::ROCK_NORMAL},
+    {"BigRock", Mineral::ROCK_BIG},
+    {"Diamond", Mineral::DIAMOND},
+    {"Skull", Mineral::SKULL},
+    {"Bone", Mineral::BONE},
+    {"QuestionBag", Mineral::QUESTION_BAG},
+    {"Mole", Mineral::MOLE},
+    {"MoleWithDiamond", Mineral::MOLE_WITH_DIAMOND},
+};
+
+
 MineralManager::MineralManager() {
     // 初始化随机种子
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -19,46 +36,39 @@ void MineralManager::initializeMinerals(Level level) {
     // 根据关卡设定不同的矿物数量和分布
     switch(level) {
         case LEVEL_1:
-            // 创建金块
-            for (int i = 0; i < 3; i++) {
-                int x = 50 + rand() % 220;
-                int y = 100 + rand() % 100;
-                createMineral(x, y, Mineral::GOLD_MINI);
-            }
+            YAML::Node config = levels["Level1"];
+            cout << "Size: " << config.size() << endl;
+            for (const auto& item : config) {
+                // cout << item << "\n" << mineralMap.size() << "\n\n";
+                for (auto mine = mineralMap.begin(); mine != mineralMap.end(); ++mine) {
+                    // cout << mine->first << endl;
+                    if (item[mine->first]) {
+                        string name = mine->first;
+                        Mineral::MineralType type = mine->second;
+                        YAML::Node param = item[name];
+                        // cout << "Mineral: \n" << param << endl;
 
-            for (int i = 0; i < 2; i++) {
-                int x = 50 + rand() % 220;
-                int y = 100 + rand() % 100;
-                createMineral(x, y, Mineral::GOLD_NORMAL);
-            }
+                        vector<int> x_range, y_range;
 
-            createMineral(100 + rand() % 120, 150 + rand() % 50, Mineral::GOLD_BIG);
+                        x_range = {
+                            param["range"]["x"][0].as<int>(),
+                            param["range"]["x"][1].as<int>(),
+                        };
+                        y_range = {
+                            param["range"]["y"][0].as<int>(),
+                            param["range"]["y"][1].as<int>(),
+                        };
 
-            // 创建石头
-            for (int i = 0; i < 5; i++) {
-                int x = 40 + rand() % 240;
-                int y = 90 + rand() % 120;
-                createMineral(x, y, Mineral::ROCK_MINI);
-            }
-
-            // 创建钻石
-            if (rand() % 100 < 30) { // 30%几率出现钻石
-                createMineral(70 + rand() % 180, 160 + rand() % 40, Mineral::DIAMOND);
-            }
-
-            // 创建神秘袋子
-            if (rand() % 100 < 50) { // 50%几率出现神秘袋子
-                createMineral(70 + rand() % 180, 140 + rand() % 60, Mineral::QUESTION_BAG);
-            }
-
-    //        // 创建地鼠
-    //        if (rand() % 100 < 40) { // 40%几率出现地鼠
-    //            createMoving(50 + rand() % 200, 180 + rand() % 30, Mineral::MOLE);
-    //        }
-
-            // 创建TNT
-            if (rand() % 100 < 20) { // 20%几率出现TNT
-                createExplosive(70 + rand() % 180, 120 + rand() % 80);
+                        for (int i = 0; i < param["num"]["min"].as<int>(); i++) {
+                            createMineral(-1, -1, type, x_range, y_range);
+                        }
+                        for (int i = param["num"]["min"].as<int>(); i < param["num"]["max"].as<int>(); i++) {
+                            if (rand() % 100 <= param["prob"].as<double>() * 100) {
+                                createMineral(-1, -1, type, x_range, y_range);
+                            }
+                        }
+                    }
+                }
             }
 
             break;
@@ -90,7 +100,7 @@ std::vector<Mineral*>& MineralManager::getMinerals() {
     return minerals;
 }
 
-void MineralManager::createMineral(int x, int y, Mineral::MineralType type) {
+void MineralManager::createMineral(int x, int y, Mineral::MineralType type, vector<int>& x_range, vector<int>& y_range) {
     IMAGE* img = nullptr;
     IMAGE* mask = nullptr;
 
@@ -141,6 +151,13 @@ void MineralManager::createMineral(int x, int y, Mineral::MineralType type) {
 
         default:
             return; // 不是金块类型
+    }
+
+    if (x == -1 && y == -1) {
+        int wid = x_range[1] - x_range[0] - img->getwidth();
+        int hei = y_range[1] - y_range[0] - img->getheight();
+        x = rand() % wid + x_range[0];
+        y = rand() % hei + y_range[0];
     }
 
     minerals.push_back(new Mineral(0x00030000 + minerals.size(), x, y, true, type, img, mask));

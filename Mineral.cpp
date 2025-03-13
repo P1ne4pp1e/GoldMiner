@@ -42,8 +42,8 @@ void Mineral::render() {
             }
             rotateimage(&showImage, &tempImage, angle * (PI / 180.0), BLACK, true);
             rotateimage(&showMask, &tempMask, angle * (PI / 180.0), WHITE, true);
-            cout << "Mineral.cpp: void Mineral::render() " << "rope_angle: " << rope.getAngle() << endl;
-            cout << "Mineral.cpp: void Mineral::render() " << "angle: " << angle << endl;
+            // cout << "Mineral.cpp: void Mineral::render() " << "rope_angle: " << rope.getAngle() << endl;
+            // cout << "Mineral.cpp: void Mineral::render() " << "angle: " << angle << endl;
 
             // 渲染在钩子位置
             Point hookPos = rope.getLengthPoint(rope.getLength() - 1 + showImage.getwidth() / scaleFactor / 2);

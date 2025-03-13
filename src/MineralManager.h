@@ -17,11 +17,13 @@ public:
 
     std::vector<Mineral*>& getMinerals(); // 获取矿物列表
 
+    static std::map<std::string, Mineral::MineralType> mineralMap;
+
 private:
     std::vector<Mineral*> minerals;      // 当前关卡的所有矿物
 
     // 辅助方法
-    void createMineral(int x, int y, Mineral::MineralType type);
+    void createMineral(int x, int y, Mineral::MineralType type, vector<int>& x_range, vector<int>& y_range);
     void createExplosive(int x, int y);
 };
 

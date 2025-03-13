@@ -50,6 +50,11 @@ void loadingImage(const vector<Images>& images) {
 
 
 
+
+YAML::Node player = LoadData("src/yaml/player.yaml");
+YAML::Node entities = LoadData("src/yaml/entities.yaml");
+YAML::Node levels = LoadData("src/yaml/levels.yaml");
+
 int main() {
 #ifdef EnableConsole
     Console console;

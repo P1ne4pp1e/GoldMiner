@@ -19,7 +19,9 @@ public:
         QUESTION_BAG,   // 神秘袋子
         SKULL,          // 骷髅头
         BONE,           // 骨头
-        TNT             // 炸药
+        TNT,            // 炸药
+        MOLE,
+        MOLE_WITH_DIAMOND
     };
 
     Mineral(uint32_t id, int x, int y, bool isDisplayed, MineralType type, IMAGE* img, IMAGE* mask);

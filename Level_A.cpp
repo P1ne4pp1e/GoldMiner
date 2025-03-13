@@ -79,6 +79,7 @@ void Level1(MineralManager& mineralManager) {
 
     // 处理钩子与矿物的碰撞
     if (hookState == 1) {
+        ani_miner.setFrameOrder({2});
         getMass = 0;
         for (auto mineral : mineralManager.getMinerals()) {
             if (!mineral->isHooked() && mineral->getDisplayed()) {
@@ -93,7 +94,7 @@ void Level1(MineralManager& mineralManager) {
 
                     hookState = 2;
                     ani_miner.setFrameOrder({0, 1, 2});
-                    ani_miner.setFrameDuration(-player["hook"]["hookVel"][hookState].as<int>() * 0.0002 * mineral->getMass());
+                    ani_miner.setFrameDuration(-player["hook"]["hookVel"][hookState].as<int>() * 0.0004 * mineral->getMass());
                     getMass = mineral->getMass();
                     // cout << getMass << endl;
 
@@ -108,7 +109,7 @@ void Level1(MineralManager& mineralManager) {
         if (hookState == 1) {
             hookState = 2;
             ani_miner.setFrameOrder({0, 1, 2});
-            ani_miner.setFrameDuration(-player["hook"]["hookVel"][hookState].as<int>() * 0.0006);
+            ani_miner.setFrameDuration(-player["hook"]["hookVel"][hookState].as<double>() * 0.00075);
         }
     }
 
@@ -158,9 +159,9 @@ void Level1(MineralManager& mineralManager) {
         rope.setAngularVelocity(hookNowAngVel);
     }
 
-    rope.addLength((player["hook"]["hookVel"][hookState].as<int>() + getMass*18) * frameTime);
+    rope.addLength((player["hook"]["hookVel"][hookState].as<double>() + getMass*8) * frameTime);
 
-    // cout << (hookVel[hookState] + getMass*18) << endl;
+    // cout << getMass << " " << (player["hook"]["hookVel"][hookState].as<double>() + getMass*8) << endl;
 
     // 更新对象
     rope.update(frameTime);

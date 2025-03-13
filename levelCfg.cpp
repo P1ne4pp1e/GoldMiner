@@ -70,8 +70,3 @@ YAML::Node LoadData(string filename) {
     }
     return node;
 };
-
-
-YAML::Node player = LoadData("src/yaml/player.yaml");
-YAML::Node entities = LoadData("src/yaml/entities.yaml");
-YAML::Node levels = LoadData("src/yaml/levels.yaml");
