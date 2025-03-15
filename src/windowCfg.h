@@ -9,4 +9,8 @@ extern bool running;              // 游戏是否正在运行
 extern bool consoleDisplayed;     // 控制台是否显示
 extern double frameTime;
 
+extern double showTargetInterval;
+extern double succeedLevelInterval;
+extern double failedLevelInterval;
+
 #endif // WINDOW_CFG_H

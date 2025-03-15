@@ -5,6 +5,7 @@
 // 全局变量定义与初始化
 Level level = START_MENU;    // 默认初始关卡为 START_MENU
 int SCORE = 0;               // 初始得分为 0
+int levelNum = 0;
 // int HIGHSCORE = 0;           // 初始最高得分为 0
 int targetScore = 0;         // 初始目标得分为 0
 //
@@ -16,6 +17,8 @@ int hookState = 0;
 //     100,
 //     -200
 // };
+
+int getMass = 0;
 
 
 
@@ -60,6 +63,8 @@ TextObject txt_timeValue(0x0002000B, 290, 14, true, _T("$"), TextObject::FONT_VI
 TextObject txt_levelTitle(0x0002000C, 245, 24, true, _T("LEVEL:"), TextObject::FONT_VISITOR1, 10, RGB(194, 136, 4));
 TextObject txt_levelValue(0x0002000D, 290, 24, true, _T("$"), TextObject::FONT_VISITOR1, 10, RGB(239, 108, 0));
 
+TextObject txt_mineralValue(0x0002000E, 95, 18, false, _T("$"), TextObject::FONT_KURLAND, 15, RGB(67, 160, 71));
+TextObject txt_pressToSkip(0x0002000F, 0, 1, false, _T("PRESS \"NULL\" TO SKIP"), TextObject::FONT_VISITOR1, 10, RGB(239, 108, 0));
 
 YAML::Node LoadData(string filename) {
     YAML::Node node;

@@ -1,5 +1,6 @@
 player:
   HIGHSCORE: 0
+  HIGHLEVEL: 0
 
 hook:
   hookAngularVelocity: 75

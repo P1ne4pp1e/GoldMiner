@@ -29,6 +29,9 @@ public:
     virtual void render() override;
     virtual void update() override;
 
+    int getWidth();
+    int getHeight();
+
     int getValue() const;         // 获取价值
     int getMass() const;          // 获取重量
     Point getCenter() const;

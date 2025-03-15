@@ -58,6 +58,7 @@ void StartMenu() {
         if (choose == 1) {
             level = Level::SHOW_TARGET;
             timer.reset();
+            timer.start();
         }else if (choose == 2) {
             level = Level::HIGH_SCORE;
         }

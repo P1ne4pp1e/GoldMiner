@@ -28,6 +28,8 @@ public:
     int getHeight();
     int getWidth();
 
+    string getText();
+
 
     void setLineSpacing(int spacing); // 新增：设置行间距
     int getLineSpacing() const; // 新增：获取行间距

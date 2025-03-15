@@ -12,6 +12,10 @@
 
 
 void ShowTarget() {
+    txt_panelLine1.setX(20);
+    txt_panelLine1.setX(75);
+    txt_panelLine1.setY(100);
+
     img_bgGoal.render();
     img_textGoldminer.render();
     img_panel.render();
@@ -19,7 +23,7 @@ void ShowTarget() {
     switch (level) {
         case Level::LEVEL_1:
             txt_panelLine1.setText("Your First Goal is");
-        targetScore = 650;
+            targetScore = levels["Level1"][0]["TargetScore"].as<int>();
         break;
         case Level::LEVEL_2:
             txt_panelLine1.setText("Your Second Goal is");
@@ -35,20 +39,28 @@ void ShowTarget() {
         break;
         default:
             txt_panelLine1.setText("Your First Goal is");
-        targetScore = 650;
+            targetScore = levels["Level1"][0]["TargetScore"].as<int>();
     }
     txt_panelLine2_1.setText( "$" + to_string(targetScore) );
 
     txt_panelLine1.render();
     txt_panelLine2_1.render();
 
-    if ( timer.elapsed() > 1.0 ) {
+
+    if ( timer.elapsed() > showTargetInterval || (GetAsyncKeyState(VK_SPACE) & 0x8000)) {
         timer.reset();
-        level = Level::LEVEL_1;
-    }
 
+        ani_miner.setFrameOrder({0});
+        ani_hookSheet.setFrameOrder({0});
 
-    if (GetAsyncKeyState(VK_BACK) & 0x8000) {
-        level = Level::START_MENU;
+        hookState = 0;
+        rope.setLength(player["hook"]["hookLength"].as<double>());
+        getMass = 0;
+        switch (levelNum) {
+            case 0:
+                level = Level::LEVEL_1;
+                levelNum = 1;
+                break;
+        }
     }
 }

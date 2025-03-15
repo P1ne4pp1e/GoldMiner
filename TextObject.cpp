@@ -15,6 +15,7 @@ int TextObject::getLineSpacing() const {
 }
 
 int TextObject::getHeight() {
+    this->setFont();
     std::string currentText = this->text;
     int totalHeight = 0;
     size_t pos = 0;
@@ -48,7 +49,12 @@ int TextObject::getHeight() {
     return totalHeight;
 }
 
+string TextObject::getText() {
+    return this->text;
+}
+
 int TextObject::getWidth() {
+    this->setFont();
     std::string currentText = this->text;
     int maxWidth = 0;
     size_t pos = 0;

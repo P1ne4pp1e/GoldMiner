@@ -14,6 +14,10 @@
 
 
 void HighScore() {
+    txt_panelLine1.setX(20);
+    txt_panelLine1.setX(75);
+    txt_panelLine1.setY(100);
+
     img_bgGoal.render();
     img_textGoldminer.render();
     img_panel.render();
@@ -22,20 +26,20 @@ void HighScore() {
     txt_panelLine2_1.setText( "$" + to_string(player["player"]["HIGHSCORE"].as<int>()) );
     txt_panelLine2_2.setX(txt_panelLine2_1.getX() + txt_panelLine2_1.getWidth() + 7.0);
 
-    switch (level) {
-        case Level::LEVEL_1:
+    switch (player["player"]["HIGHLEVEL"].as<int>()) {
+        case 1:
             txt_panelLine2_2.setText( _T("at Level1") );
         break;
-        case Level::LEVEL_2:
+        case 2:
             txt_panelLine2_2.setText( _T("at Level2") );
         break;
-        case Level::LEVEL_3:
+        case 3:
             txt_panelLine2_2.setText( _T("at Level3") );
         break;
-        case Level::LEVEL_4:
+        case 4:
             txt_panelLine2_2.setText( _T("at Level4") );
         break;
-        case Level::LEVEL_5:
+        case 5:
             txt_panelLine2_2.setText( _T("at Level5") );
         break;
         default:

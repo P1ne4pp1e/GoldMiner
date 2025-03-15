@@ -12,6 +12,15 @@ Mineral::Mineral(uint32_t id, int x, int y, bool isDisplayed, MineralType type, 
     radius = config.radius;
 }
 
+int Mineral::getHeight() {
+    return img->getheight();
+}
+
+int Mineral::getWidth() {
+    return img->getwidth();
+}
+
+
 void Mineral::render() {
     if (this->isDisplayed) {
         if (this->hooked) {

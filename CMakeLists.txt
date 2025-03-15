@@ -56,6 +56,9 @@ add_executable(GoldMiner
         ShowTarget.cpp
         Level_A.cpp
 
+        SucceedLevel.cpp
+        FailedLevel.cpp
+
         # 控制台功能
         commands.cpp
         Console.cpp

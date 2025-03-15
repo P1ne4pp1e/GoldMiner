@@ -48,9 +48,10 @@ void handleHookMineral(MineralManager& mineralManager) {
 
 
 void Level1(MineralManager& mineralManager) {
-    static int getMass = 0;
+    static double lastShowTime = 0;
 
-    txt_timeValue.setText(to_string(60-int(timer.elapsed())));
+    txt_pressToSkip.setX(320 - txt_pressToSkip.getWidth() / scaleFactor);
+    txt_timeValue.setText(to_string(levels["LevelTime"].as<int>()-int(timer.elapsed())));
     ani_hookSheet.setPivot(6.5, 0);
 
     // 更新矿物
@@ -134,7 +135,9 @@ void Level1(MineralManager& mineralManager) {
                 if ((*it)->isHooked()) {
                     // 增加分数
                     SCORE += (*it)->getValue();
-
+                    txt_mineralValue.setText("$" + to_string((*it)->getValue()));
+                    txt_mineralValue.setDisp(true);
+                    lastShowTime = timer.elapsed();
                     // 删除矿物
                     delete *it;
                     it = minerals.erase(it);
@@ -162,6 +165,26 @@ void Level1(MineralManager& mineralManager) {
     rope.addLength((player["hook"]["hookVel"][hookState].as<double>() + getMass*8) * frameTime);
 
     // cout << getMass << " " << (player["hook"]["hookVel"][hookState].as<double>() + getMass*8) << endl;
+
+    if (txt_mineralValue.getDisplayed() && (timer.elapsed()-lastShowTime) >= 2.00) {
+        txt_mineralValue.setDisp(false);
+    }
+
+    if (SCORE >= targetScore) {
+        txt_pressToSkip.setDisp(true);
+    }
+
+    if (timer.elapsed()>levels["LevelTime"].as<int>()) {
+        timer.reset();
+        if (SCORE >= targetScore) {
+            level = SUCCEEDLEVEL;
+            levelNum = 1;
+        }else {
+            level = FAILEDLEVEL;
+            player["player"]["HIGHSCORE"] = SCORE;
+            player["player"]["HIGHLEVEL"] = 1;
+        }
+    }
 
     // 更新对象
     rope.update(frameTime);
@@ -191,4 +214,7 @@ void Level1(MineralManager& mineralManager) {
     txt_timeValue.render();
     txt_levelTitle.render();
     txt_levelValue.render();
+    txt_mineralValue.render();
+
+    txt_pressToSkip.render();
 }

@@ -157,17 +157,27 @@ int main() {
                 txt_levelValue.setText( _T("0") );
         }
 
-        if (level == Level::START_MENU) {
-            StartMenu();
-        }else if (level == Level::HIGH_SCORE) {
-            HighScore();
-        }else if (level == Level::SHOW_TARGET) {
-            ShowTarget();
-        }else if (level == Level::LEVEL_1) {
-            mineralManager.update(frameTime);
-            // cout << &mineralManager << " " << mineralManager.getMinerals().size() << endl;
-            // Level1函数中会调用mineralManager.render()
-            Level1(mineralManager); // 修改Level1函数以接收矿物管理器
+
+        switch (level) {
+            case START_MENU:
+                StartMenu();
+                break;
+            case HIGH_SCORE:
+                HighScore();
+                break;
+            case SHOW_TARGET:
+                ShowTarget();
+                break;
+            case SUCCEEDLEVEL:
+                SucceedLevel();
+                break;
+            case FAILEDLEVEL:
+                FailedLevel();
+                break;
+            case LEVEL_1:
+                mineralManager.update(frameTime);
+                Level1(mineralManager); // 修改Level1函数以接收矿物管理器
+                break;
         }
 
         SET_SINGLE_FONT(15, 0, "Pixel Square", "fonts/Pixel-Square-10-1.ttf");
@@ -186,7 +196,7 @@ int main() {
         // putimage(50, 420, &img3);
         // angle_tmp += 1;
 
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+        if (GetAsyncKeyState(VK_DELETE) & 0x8000) {
             running = false;
         }
 

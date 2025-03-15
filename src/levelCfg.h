@@ -15,6 +15,8 @@ enum Level {
     START_MENU,
     SHOW_TARGET,
     HIGH_SCORE,
+    SUCCEEDLEVEL,
+    FAILEDLEVEL,
     LEVEL_1,
     LEVEL_2,
     LEVEL_3,
@@ -24,6 +26,7 @@ enum Level {
 
 // 全局变量声明
 extern Level level;         // 当前关卡
+extern int levelNum;
 extern int SCORE;           // 当前得分
 // extern int HIGHSCORE;       // 最高得分
 extern int targetScore;     // 目标得分
@@ -32,6 +35,7 @@ extern int targetScore;     // 目标得分
 extern int hookState;
 // extern double hookLength;
 // extern double hookVel[3];
+extern int getMass;
 
 
 
@@ -80,6 +84,9 @@ extern TextObject txt_timeValue;
 extern TextObject txt_levelTitle;
 extern TextObject txt_levelValue;
 
+extern TextObject txt_mineralValue;
+extern TextObject txt_pressToSkip;
+
 
 extern YAML::Node player;
 extern YAML::Node entities;
@@ -92,5 +99,9 @@ void StartMenu();
 void HighScore();
 
 void ShowTarget();
+
+void SucceedLevel();
+
+void FailedLevel();
 
 #endif // LEVEL_CFG_H
