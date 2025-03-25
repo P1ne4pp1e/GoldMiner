@@ -12,6 +12,7 @@
 #include "src/Mineral.h"
 #include "src/MineralManager.h"
 #include "src/LevelFunctions.h"
+#include "src/Console.h"
 
 #define HEIGHT 240
 #define WIDTH 320
@@ -23,7 +24,7 @@ void FailedLevel() {
     txt_panelLine1.setX((WIDTH - txt_panelLine1.getWidth() / scaleFactor) / 2);
     txt_panelLine1.setY(130);
 
-    if (timer.elapsed() > failedLevelInterval || (GetAsyncKeyState(VK_SPACE) & 0x8000)) {
+    if (timer.elapsed() > failedLevelInterval || ((GetAsyncKeyState(VK_SPACE) & 0x8000) && !console.IsVisible())) {
         level = START_MENU;
         SCORE = 0;
         levelNum = 0;

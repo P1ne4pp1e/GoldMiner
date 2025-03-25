@@ -21,7 +21,8 @@
 #include "src/LevelFunctions.h"
 
 #include "src/Console.h"
-#include "src/Commands.h"
+#include "src/GameCommands.h"
+
 
 #include <yaml-cpp/yaml.h>
 
@@ -37,6 +38,11 @@ settextstyle(height, width, _T(fontName)); \
 using namespace std;
 namespace fs = std::filesystem;
 
+
+// 创建矿物管理器
+MineralManager mineralManager;
+// 定义全局矿物管理器指针，用于控制台访问
+MineralManager* g_mineralManager = nullptr;
 
 void loadingImage(const vector<Images>& images) {
     std::filesystem::path currentPath = std::filesystem::current_path();
@@ -54,20 +60,41 @@ void loadingImage(const vector<Images>& images) {
 YAML::Node player = LoadData("src/yaml/player.yaml");
 YAML::Node entities = LoadData("src/yaml/entities.yaml");
 YAML::Node levels = LoadData("src/yaml/levels.yaml");
+// 在main函数开头附近，变量声明部分添加：
+bool prevTildeState = false;  // 跟踪波浪号键的上一状态
+
+// 在main函数开始处添加这些代码
+Console console;
 
 int main() {
-#ifdef EnableConsole
-    Console console;
 
-    // 初始化默认命令
-    InitializeDefaultCommands(console);
+    // 初始化游戏命令
+    InitializeGameCommands(console);
 
     // 添加欢迎消息
-    console.AddLog("Welcome to the Console!");
-    console.AddLog("Type 'help' for available commands.");
+    console.AddLog("=== Gold Miner Console ===");
+    console.AddLog("Type 'help' to see available commands");
+    console.AddLog("Press ~ key to toggle console");
+    // 设置矿物管理器的全局指针
+    g_mineralManager = &mineralManager;
 
-    console.Hide();
-#endif
+    // 在消息循环部分
+
+    // 检查波浪号键状态（用于切换控制台）
+    bool currentTildeState = (GetAsyncKeyState(VK_OEM_3) & 0x8000) != 0;
+    if (currentTildeState && !prevTildeState) {
+        console.Toggle();  // 切换控制台显示状态
+    }
+    prevTildeState = currentTildeState;
+
+    // 如果控制台可见，处理其消息
+    if (IsWindowVisible(console.GetHandle())) {
+        MSG msg;
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
 
     loadingImage(images);
 
@@ -76,8 +103,6 @@ int main() {
     setbkcolor(GREEN);
 
 
-    // 创建矿物管理器
-    MineralManager mineralManager;
 
 
     level = Level::START_MENU;
@@ -97,11 +122,6 @@ int main() {
 
     // 消息循环
     MSG msg = {};
-
-#ifdef EnableConsole
-    // 添加~键状态跟踪变量
-    static bool prevTildeState = false;
-#endif
 
 
     timer.start();
@@ -196,11 +216,12 @@ int main() {
         // putimage(50, 420, &img3);
         // angle_tmp += 1;
 
-        if (GetAsyncKeyState(VK_DELETE) & 0x8000) {
-            running = false;
+        if (!console.IsVisible()) {
+            if (GetAsyncKeyState(VK_DELETE) & 0x8000) {
+                running = false;
+            }
         }
 
-#ifdef EnableConsole
         bool currentTildeState = (GetAsyncKeyState(VK_OEM_3) & 0x8000);
         if (currentTildeState && !prevTildeState) {
             console.Toggle();  // 切换控制台状态
@@ -208,21 +229,17 @@ int main() {
             cout << "Console Displayed: " << consoleDisplayed << endl;
         }
         prevTildeState = currentTildeState;
-#endif
-
 
         EndBatchDraw();
 
-        // cout << frameTimer.elapsed() << endl;
-
-#ifdef EnableConsole
         if (consoleDisplayed) {
             running = GetMessage(&msg, nullptr, 0, 0);
 
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-#endif
+
+        // cout << frameTimer.elapsed() << endl;
 
         // 帧率控制
         frameTime = frameTimer.elapsed();  // 获取本帧实际耗时

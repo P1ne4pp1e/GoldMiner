@@ -9,7 +9,7 @@
 #include "src/TriangleObject.h"
 #include "src/AnimationObject.h"
 #include "src/LineObject.h"
-
+#include "src/Console.h"
 
 
 
@@ -24,7 +24,7 @@ void HighScore() {
 
     txt_panelLine1.setText("High Score: ");
     txt_panelLine2_1.setText( "$" + to_string(player["player"]["HIGHSCORE"].as<int>()) );
-    txt_panelLine2_2.setX(txt_panelLine2_1.getX() + txt_panelLine2_1.getWidth() + 7.0);
+    txt_panelLine2_2.setX(txt_panelLine2_1.getX() + txt_panelLine2_1.getWidth()/scaleFactor + 7.0);
 
     switch (player["player"]["HIGHLEVEL"].as<int>()) {
         case 1:
@@ -51,7 +51,7 @@ void HighScore() {
     txt_panelLine2_2.render();
     // std::cout << "Current path: " << std::filesystem::current_path() << std::endl;
 
-    if (GetAsyncKeyState(VK_BACK) & 0x8000) {
+    if ((GetAsyncKeyState(VK_BACK) & 0x8000 && !console.IsVisible())) {
         level = Level::START_MENU;
     }
 

@@ -12,6 +12,7 @@
 #include "src/Mineral.h"
 #include "src/MineralManager.h"
 #include "src/LevelFunctions.h"
+#include "src/Console.h"
 
 #define HEIGHT 240
 #define WIDTH 320
@@ -72,12 +73,13 @@ void Level1(MineralManager& mineralManager) {
     ani_hookSheet.setAngle(90-rope.getAngle());
 
     // 按下键抓取
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-        if (hookState == 0) {
-            hookState = 1;
+    if (!console.IsVisible()){
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            if (hookState == 0) {
+                hookState = 1;
+            }
         }
     }
-
     // 处理钩子与矿物的碰撞
     if (hookState == 1) {
         ani_miner.setFrameOrder({2});

@@ -9,7 +9,7 @@
 #include "src/TriangleObject.h"
 #include "src/AnimationObject.h"
 #include "src/LineObject.h"
-
+#include "src/Console.h"
 
 
 void StartMenu() {
@@ -46,21 +46,23 @@ void StartMenu() {
             level = Level::HIGH_SCORE;
         }
     }
-    if (GetAsyncKeyState(0x26) & 0x8000) {
-        choose = 1;
-        // cout << "VK_UP"  << endl;
-    }
-    if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-        choose = 2;
-        // cout << "VK_DOWN" << endl;
-    }
-    if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
-        if (choose == 1) {
-            level = Level::SHOW_TARGET;
-            timer.reset();
-            timer.start();
-        }else if (choose == 2) {
-            level = Level::HIGH_SCORE;
+    if (!console.IsVisible()) {
+        if (GetAsyncKeyState(0x26) & 0x8000) {
+            choose = 1;
+            // cout << "VK_UP"  << endl;
+        }
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            choose = 2;
+            // cout << "VK_DOWN" << endl;
+        }
+        if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
+            if (choose == 1) {
+                level = Level::SHOW_TARGET;
+                timer.reset();
+                timer.start();
+            }else if (choose == 2) {
+                level = Level::HIGH_SCORE;
+            }
         }
     }
 

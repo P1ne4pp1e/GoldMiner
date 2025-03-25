@@ -60,7 +60,7 @@ add_executable(GoldMiner
         FailedLevel.cpp
 
         # 控制台功能
-        commands.cpp
+        GameCommands.cpp
         Console.cpp
 
         # 主程序应该最后
@@ -74,5 +74,5 @@ add_subdirectory(yaml-cpp)
 target_link_libraries(GoldMiner PRIVATE
         easyx
         yaml-cpp
-        user32 gdi32 kernel32 shell32 ole32 oleaut32 uuid comdlg32 advapi32
+        user32 gdi32 kernel32 shell32 ole32 oleaut32 uuid comdlg32 advapi32 user32
 )

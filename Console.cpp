@@ -1,9 +1,10 @@
 #include "src/Console.h"
 #include <windowsx.h>
 #include <algorithm>
+#include <cctype>
 
 // 窗口类名
-static const wchar_t* WINDOW_CLASS = L"ConsoleWindow";
+static const wchar_t* WINDOW_CLASS = L"GoldMinerConsole";
 
 Console::Console()
     : m_hWnd(nullptr)
@@ -28,6 +29,7 @@ Console::Console()
     wc.lpfnWndProc = WndProc;
     wc.hInstance = GetModuleHandle(nullptr);
     wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszClassName = WINDOW_CLASS;
     RegisterClassExW(&wc);
 
@@ -35,7 +37,7 @@ Console::Console()
     m_hWnd = CreateWindowExW(
         0,
         WINDOW_CLASS,
-        L"Console",
+        L"Gold Miner Console",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT,
         m_windowWidth, m_windowHeight,
@@ -51,9 +53,36 @@ Console::Console()
     // 设置光标闪烁定时器
     m_timerID = SetTimer(m_hWnd, 1, 500, nullptr);
 
-    // 显示窗口
-    ShowWindow(m_hWnd, SW_SHOW);
-    UpdateWindow(m_hWnd);
+    // 注册提示文本自动命令补全
+    RegisterCommand("help", [this](const std::string&) {
+        AddLog("=== Gold Miner Console ===");
+        AddLog("Available commands:");
+        AddLog("  help      - Show this help message");
+        AddLog("  clear     - Clear the console");
+        AddLog("  exit      - Hide the console");
+        AddLog("  version   - Show console version");
+        AddLog("  game      - Game control commands (use 'game help' for details)");
+        AddLog("  miner     - Control the miner character (use 'miner help' for details)");
+        AddLog("  mineral   - Mineral information commands (use 'mineral help' for details)");
+        AddLog("  score     - Score and goal related commands (use 'score help' for details)");
+        AddLog("  debug     - Debug commands (use 'debug help' for details)");
+    });
+
+    RegisterCommand("clear", [this](const std::string&) {
+        Clear();
+    });
+
+    RegisterCommand("exit", [this](const std::string&) {
+        Hide();
+    });
+
+    RegisterCommand("version", [this](const std::string&) {
+        AddLog("Gold Miner Console v1.0");
+        AddLog("Author: 马伯龙");
+    });
+
+    // 初始隐藏窗口
+    Hide();
 }
 
 Console::~Console() {
@@ -83,7 +112,7 @@ LRESULT Console::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
                 size_t len = strlen(m_inputBuf);
                 if (len < sizeof(m_inputBuf) - 1) {
                     // 在光标位置插入字符
-                    memmove(m_inputBuf + m_cursorPos + 1, m_inputBuf + m_cursorPos, len - m_cursorPos);
+                    memmove(m_inputBuf + m_cursorPos + 1, m_inputBuf + m_cursorPos, len - m_cursorPos + 1);
                     m_inputBuf[m_cursorPos] = static_cast<char>(wParam);
                     m_cursorPos++;
                 }
@@ -98,6 +127,7 @@ LRESULT Console::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
                 if (!command.empty()) {
                     ExecuteCommand(command);
                     memset(m_inputBuf, 0, sizeof(m_inputBuf));
+                    m_cursorPos = 0;
                     InvalidateRect(m_hWnd, nullptr, TRUE);
                 }
             }
@@ -110,12 +140,28 @@ LRESULT Console::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
                     InvalidateRect(m_hWnd, nullptr, TRUE);
                 }
             }
+            else if (wParam == VK_DELETE) {
+                // 删除光标后的字符
+                size_t len = strlen(m_inputBuf);
+                if (m_cursorPos < len) {
+                    memmove(m_inputBuf + m_cursorPos, m_inputBuf + m_cursorPos + 1, len - m_cursorPos);
+                    InvalidateRect(m_hWnd, nullptr, TRUE);
+                }
+            }
             else if (wParam == VK_LEFT && m_cursorPos > 0) {
                 m_cursorPos--;
                 InvalidateRect(m_hWnd, nullptr, TRUE);
             }
             else if (wParam == VK_RIGHT && m_cursorPos < strlen(m_inputBuf)) {
                 m_cursorPos++;
+                InvalidateRect(m_hWnd, nullptr, TRUE);
+            }
+            else if (wParam == VK_HOME) {
+                m_cursorPos = 0;
+                InvalidateRect(m_hWnd, nullptr, TRUE);
+            }
+            else if (wParam == VK_END) {
+                m_cursorPos = strlen(m_inputBuf);
                 InvalidateRect(m_hWnd, nullptr, TRUE);
             }
             else if (wParam == VK_UP) {
@@ -142,6 +188,32 @@ LRESULT Console::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
                     InvalidateRect(m_hWnd, nullptr, TRUE);
                 }
             }
+            else if (wParam == VK_TAB) {
+                // 命令自动补全
+                std::string currentInput = m_inputBuf;
+                if (!currentInput.empty()) {
+                    // 查找匹配的命令
+                    std::string bestMatch;
+                    for (const auto& pair : m_commands) {
+                        if (pair.first.size() >= currentInput.size() &&
+                            _strnicmp(pair.first.c_str(), currentInput.c_str(), currentInput.size()) == 0) {
+                            if (bestMatch.empty() || pair.first.size() < bestMatch.size()) {
+                                bestMatch = pair.first;
+                            }
+                        }
+                    }
+
+                    if (!bestMatch.empty()) {
+                        strcpy_s(m_inputBuf, bestMatch.c_str());
+                        m_cursorPos = strlen(m_inputBuf);
+                        InvalidateRect(m_hWnd, nullptr, TRUE);
+                    }
+                }
+            }
+            else if (wParam == VK_ESCAPE) {
+                // 隐藏控制台
+                Hide();
+            }
             return 0;
 
         case WM_TIMER:
@@ -153,7 +225,7 @@ LRESULT Console::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
         case WM_MOUSEWHEEL:
             // 处理滚轮事件
-            m_scrollOffset += GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA * m_lineHeight;
+            m_scrollOffset -= GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA * m_lineHeight * 3;
             m_scrollOffset = std::max(0, std::min(m_scrollOffset,
                 static_cast<int>(m_items.size() * m_lineHeight - (m_windowHeight - m_inputHeight - m_toolbarHeight))));
             InvalidateRect(m_hWnd, nullptr, TRUE);
@@ -187,16 +259,53 @@ void Console::Draw() {
 
     // 填充背景
     RECT rect = { 0, 0, m_windowWidth, m_windowHeight };
-    FillRect(memDC, &rect, (HBRUSH)GetStockObject(BLACK_BRUSH));
+    HBRUSH bgBrush = CreateSolidBrush(RGB(0, 0, 0)); // 黑色背景
+    FillRect(memDC, &rect, bgBrush);
+    DeleteObject(bgBrush);
 
-    // 设置文本颜色和背景模式
-    SetTextColor(memDC, RGB(255, 255, 255));
+    // 绘制标题栏
+    RECT titleRect = { 0, 0, m_windowWidth, m_toolbarHeight };
+    HBRUSH titleBrush = CreateSolidBrush(RGB(32, 32, 32)); // 深灰色标题栏
+    FillRect(memDC, &titleRect, titleBrush);
+    DeleteObject(titleBrush);
+
+    // 绘制标题
+    SetTextColor(memDC, RGB(255, 215, 0)); // 金色文本
     SetBkMode(memDC, TRANSPARENT);
+    HFONT titleFont = CreateFont(18, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+                                OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                                DEFAULT_PITCH | FF_DONTCARE, "Consolas");
+    HFONT oldFont = (HFONT)SelectObject(memDC, titleFont);
+    TextOutA(memDC, 10, 5, "Gold Miner Console", 18);
+    SelectObject(memDC, oldFont);
+    DeleteObject(titleFont);
+
+    // 设置日志文本字体和颜色
+    HFONT logFont = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+                              OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                              DEFAULT_PITCH | FF_DONTCARE, "Consolas");
+    SelectObject(memDC, logFont);
+    SetTextColor(memDC, RGB(200, 200, 200)); // 浅灰色文本
 
     // 绘制日志
     int y = m_toolbarHeight - m_scrollOffset;
     for (const auto& item : m_items) {
         if (y + m_lineHeight >= m_toolbarHeight && y <= m_windowHeight - m_inputHeight) {
+            // 根据日志类型设置颜色
+            if (item.find("Error:") == 0) {
+                SetTextColor(memDC, RGB(255, 100, 100)); // 错误为红色
+            } else if (item.find("Warning:") == 0) {
+                SetTextColor(memDC, RGB(255, 255, 100)); // 警告为黄色
+            } else if (item.find("Success:") == 0) {
+                SetTextColor(memDC, RGB(100, 255, 100)); // 成功为绿色
+            } else if (item.find("===") == 0) {
+                SetTextColor(memDC, RGB(255, 215, 0)); // 标题为金色
+            } else if (item.find("Command:") == 0) {
+                SetTextColor(memDC, RGB(100, 200, 255)); // 命令为蓝色
+            } else {
+                SetTextColor(memDC, RGB(200, 200, 200)); // 默认为浅灰色
+            }
+
             TextOutA(memDC, 10, y, item.c_str(), static_cast<int>(item.length()));
         }
         y += m_lineHeight;
@@ -204,31 +313,38 @@ void Console::Draw() {
 
     // 绘制输入框背景
     RECT inputRect = { 0, m_windowHeight - m_inputHeight, m_windowWidth, m_windowHeight };
-    HBRUSH lightGrayBrush = CreateSolidBrush(RGB(230, 230, 230));
-    FillRect(memDC, &inputRect, lightGrayBrush);
-    DeleteObject(lightGrayBrush);
+    HBRUSH inputBrush = CreateSolidBrush(RGB(32, 32, 32)); // 深灰色输入框
+    FillRect(memDC, &inputRect, inputBrush);
+    DeleteObject(inputBrush);
 
-    // 设置输入文本颜色为黑色
-    SetTextColor(memDC, RGB(0, 0, 0));
-    
-    // 绘制输入文本和光标
+    // 绘制输入提示符
+    SetTextColor(memDC, RGB(255, 215, 0)); // 金色提示符
+    TextOutA(memDC, 10, m_windowHeight - m_inputHeight + 5, ">", 1);
+
+    // 绘制输入文本
+    SetTextColor(memDC, RGB(255, 255, 255)); // 白色输入文本
     std::string inputText = m_inputBuf;
-    TextOutA(memDC, 10, m_windowHeight - m_inputHeight + 5, inputText.c_str(), static_cast<int>(inputText.length()));
-    
+    TextOutA(memDC, 25, m_windowHeight - m_inputHeight + 5, inputText.c_str(), static_cast<int>(inputText.length()));
+
     // 计算光标位置
     SIZE textSize;
     GetTextExtentPoint32A(memDC, inputText.c_str(), static_cast<int>(m_cursorPos), &textSize);
-    
+
     // 绘制光标
     if (m_showCursor) {
         RECT cursorRect = {
-            10 + textSize.cx,
-            m_windowHeight - m_inputHeight + 18,
-            10 + textSize.cx + 8,
-            m_windowHeight - m_inputHeight + 20
+            25 + textSize.cx,
+            m_windowHeight - m_inputHeight + 5,
+            25 + textSize.cx + 2,
+            m_windowHeight - m_inputHeight + 21
         };
-        FillRect(memDC, &cursorRect, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        HBRUSH cursorBrush = CreateSolidBrush(RGB(255, 255, 255)); // 白色光标
+        FillRect(memDC, &cursorRect, cursorBrush);
+        DeleteObject(cursorBrush);
     }
+
+    // 清理字体
+    DeleteObject(logFont);
 
     // 将内存DC的内容复制到窗口DC
     BitBlt(hdc, 0, 0, m_windowWidth, m_windowHeight, memDC, 0, 0, SRCCOPY);
@@ -260,24 +376,58 @@ void Console::RegisterCommand(const std::string& command, std::function<void(con
     m_commands[command] = callback;
 }
 
-void Console::ExecuteCommand(const std::string& command) {
-    AddLog("> " + command);
+void Console::ExecuteCommand(const std::string& commandLine) {
+    AddLog("> " + commandLine);
+
     // 添加到历史命令
-    m_commandHistory.push_back(command);
-    m_historyIndex = 0;
-    
-    auto it = m_commands.find(command);
-    if (it != m_commands.end()) {
-        it->second(command);
-    } else {
-        AddLog("Unknown command: " + command);
+    m_commandHistory.push_back(commandLine);
+    if (m_commandHistory.size() > 100) {
+        m_commandHistory.erase(m_commandHistory.begin());
     }
-    // 重置光标位置
-    m_cursorPos = 0;
+    m_historyIndex = 0;
+
+    // 解析命令和参数
+    std::string command;
+    std::string params;
+
+    size_t spacePos = commandLine.find(' ');
+    if (spacePos != std::string::npos) {
+        command = commandLine.substr(0, spacePos);
+        params = commandLine.substr(spacePos + 1);
+    } else {
+        command = commandLine;
+        params = "";
+    }
+
+    // 转换为小写以进行不区分大小写的比较
+    std::string lowerCommand = command;
+    std::transform(lowerCommand.begin(), lowerCommand.end(), lowerCommand.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    // 执行命令
+    auto it = m_commands.find(lowerCommand);
+    if (it != m_commands.end()) {
+        it->second(params);
+    } else {
+        // 查找子命令（例如"game status"中的"game"部分）
+        for (const auto& pair : m_commands) {
+            if (lowerCommand.find(pair.first) == 0 && lowerCommand.length() > pair.first.length()) {
+                char nextChar = lowerCommand[pair.first.length()];
+                if (nextChar == ' ' || nextChar == '_') {
+                    it->second(lowerCommand.substr(pair.first.length() + 1) + " " + params);
+                    return;
+                }
+            }
+        }
+
+        AddLog("Error: Unknown command: " + command);
+        AddLog("Type 'help' for a list of available commands.");
+    }
 }
 
 void Console::Show() {
     ShowWindow(m_hWnd, SW_SHOW);
+    SetForegroundWindow(m_hWnd);
     UpdateWindow(m_hWnd);
 }
 

@@ -9,7 +9,7 @@
 #include "src/TriangleObject.h"
 #include "src/AnimationObject.h"
 #include "src/LineObject.h"
-
+#include "src/Console.h"
 
 void ShowTarget() {
     txt_panelLine1.setX(20);
@@ -47,7 +47,7 @@ void ShowTarget() {
     txt_panelLine2_1.render();
 
 
-    if ( timer.elapsed() > showTargetInterval || (GetAsyncKeyState(VK_SPACE) & 0x8000)) {
+    if ( timer.elapsed() > showTargetInterval || ((GetAsyncKeyState(VK_SPACE) & 0x8000) && !console.IsVisible())) {
         timer.reset();
 
         ani_miner.setFrameOrder({0});

@@ -3,8 +3,12 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <map>
 #include <functional>
-#include <unordered_map>
+#include <cstdint>
+
+// Add this function to Console.h (public section):
+
 
 class Console {
 public:
@@ -41,16 +45,28 @@ public:
     // 切换窗口显示状态
     void Toggle();
 
+    // 获取窗口句柄
+    HWND GetHandle() const { return m_hWnd; }
+
     // 窗口过程函数
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
+    /**
+     * Check if the console is currently visible
+     * @return true if console is visible, false otherwise
+     */
+    bool IsVisible() const {
+        return IsWindowVisible(m_hWnd);
+    }
 
 private:
     HWND m_hWnd;                     // 窗口句柄
     std::vector<std::string> m_items; // 日志条目
     char m_inputBuf[256];            // 输入缓冲区
 
-    // 命令回调映射
-    std::unordered_map<std::string, std::function<void(const std::string&)>> m_commands;
+    // 命令回调映射 (不区分大小写)
+    std::map<std::string, std::function<void(const std::string&)>> m_commands;
 
     // 历史命令相关
     std::vector<std::string> m_commandHistory;  // 历史命令容器
@@ -65,6 +81,9 @@ private:
     int m_inputHeight;
     int m_toolbarHeight;
     bool m_showCursor;     // 光标显示状态
-    UINT_PTR m_timerID;   // 光标闪烁计时器ID
+    UINT_PTR m_timerID;    // 光标闪烁计时器ID
     size_t m_cursorPos;    // 光标位置
 };
+
+
+extern Console console;
